@@ -42,10 +42,14 @@ const App: React.FC = () => {
   useEffect(() => {
     const checkProfile = async () => {
       if (!session) {
+        console.log("No session, setting hasProfile to null");
         setHasProfile(null);
         setLoading(false);
         return;
       }
+
+      console.log("Checking profile for user:", session.user.id);
+      setLoading(true);
 
       try {
         const { data, error } = await supabase
@@ -54,21 +58,28 @@ const App: React.FC = () => {
           .eq("id", session.user.id)
           .single();
 
-        if (error && error.code !== "PGRST116") {
-          // PGRST116 is "not found" error
-          console.error("Error checking profile:", error);
-          setHasProfile(false);
-        } else if (data && data.username) {
-          // Profile exists and has username (required field)
+        console.log("Profile query result:", { data, error });
+
+        if (error) {
+          if (error.code === "PGRST116") {
+            console.log("Profile not found, setting hasProfile to false");
+            setHasProfile(false);
+          } else {
+            console.error("Error checking profile:", error);
+            setHasProfile(false);
+          }
+        } else if (data && data.username && data.username.trim().length >= 3) {
+          console.log("Profile found with username:", data.username);
           setHasProfile(true);
         } else {
-          // Profile doesn't exist or is incomplete
+          console.log("Profile exists but incomplete:", data);
           setHasProfile(false);
         }
       } catch (error) {
-        console.error("Error checking profile:", error);
+        console.error("Exception checking profile:", error);
         setHasProfile(false);
       } finally {
+        console.log("Setting loading to false");
         setLoading(false);
       }
     };
@@ -77,8 +88,32 @@ const App: React.FC = () => {
   }, [session]);
 
   if (loading) {
-    return <IonApp></IonApp>; // Or a loading spinner
+    return (
+      <IonApp>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            background: "linear-gradient(135deg, #fff8fc 0%, #f7e9ff 100%)",
+          }}
+        >
+          <div
+            style={{
+              textAlign: "center",
+              color: "#6b6374",
+              fontSize: "16px",
+            }}
+          >
+            Cargando...
+          </div>
+        </div>
+      </IonApp>
+    );
   }
+
+  console.log("Rendering with session:", !!session, "hasProfile:", hasProfile);
 
   return (
     <IonApp>
@@ -89,8 +124,29 @@ const App: React.FC = () => {
               <LoginPage />
             ) : hasProfile === false ? (
               <Redirect to="/onboarding" />
-            ) : (
+            ) : hasProfile === true ? (
               <Redirect to="/account" />
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100vh",
+                  background:
+                    "linear-gradient(135deg, #fff8fc 0%, #f7e9ff 100%)",
+                }}
+              >
+                <div
+                  style={{
+                    textAlign: "center",
+                    color: "#6b6374",
+                    fontSize: "16px",
+                  }}
+                >
+                  Verificando perfil...
+                </div>
+              </div>
             )}
           </Route>
 
@@ -103,7 +159,7 @@ const App: React.FC = () => {
           </Route>
 
           <Route exact path="/account">
-            {session && hasProfile ? (
+            {session && hasProfile === true ? (
               <AccountPage />
             ) : (
               <Redirect to="/" />
