@@ -20,7 +20,11 @@
 .account-page .decoration-1 {
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, var(--ion-color-primary) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    var(--ion-color-primary) 0%,
+    transparent 70%
+  );
   top: -200px;
   right: -100px;
   animation-delay: 0s;
@@ -29,7 +33,11 @@
 .account-page .decoration-2 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, var(--ion-color-secondary) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    var(--ion-color-secondary) 0%,
+    transparent 70%
+  );
   bottom: -150px;
   left: -100px;
   animation-delay: 7s;
@@ -38,7 +46,11 @@
 .account-page .decoration-3 {
   width: 350px;
   height: 350px;
-  background: radial-gradient(circle, var(--ion-color-tertiary) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    var(--ion-color-tertiary) 0%,
+    transparent 70%
+  );
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -46,9 +58,16 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -30px) scale(1.1); }
-  66% { transform: translate(-30px, 30px) scale(0.9); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  66% {
+    transform: translate(-30px, 30px) scale(0.9);
+  }
 }
 
 /* Main container */
@@ -67,9 +86,11 @@
   align-items: center;
   justify-content: center;
   padding: 60px 40px;
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.95) 0%, 
-    rgba(247, 233, 255, 0.9) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(247, 233, 255, 0.9) 100%
+  );
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
@@ -86,7 +107,11 @@
   width: 80px;
   height: 80px;
   margin-bottom: 24px;
-  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--ion-color-primary),
+    var(--ion-color-secondary)
+  );
   border-radius: 24px;
   box-shadow: 0 12px 40px rgba(227, 106, 214, 0.3);
   animation: pulse 3s ease-in-out infinite;
@@ -98,7 +123,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     box-shadow: 0 12px 40px rgba(227, 106, 214, 0.3);
   }
@@ -112,7 +138,11 @@
   font-size: 56px;
   font-weight: 700;
   letter-spacing: -1px;
-  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--ion-color-primary),
+    var(--ion-color-secondary)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -131,13 +161,17 @@
 .profile-divider {
   width: 60px;
   height: 3px;
-  background: linear-gradient(90deg, var(--ion-color-primary), var(--ion-color-secondary));
+  background: linear-gradient(
+    90deg,
+    var(--ion-color-primary),
+    var(--ion-color-secondary)
+  );
   margin: 0 auto 32px;
   border-radius: 2px;
 }
 
-/* Email display */
-.email-display {
+/* Role display */
+.role-display {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -147,6 +181,30 @@
   padding: 20px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.5);
+  margin-top: 16px;
+}
+
+.role-icon {
+  font-size: 24px;
+  color: var(--ion-color-secondary);
+}
+
+.role-info {
+  text-align: left;
+}
+
+.role-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ion-color-medium);
+  margin: 0 0 4px 0;
+}
+
+.role-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ion-color-secondary);
+  margin: 0;
 }
 
 .email-icon {
@@ -293,9 +351,21 @@
   font-weight: 600;
   letter-spacing: 0.5px;
   --border-radius: 16px;
-  --background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
-  --background-hover: linear-gradient(135deg, var(--ion-color-primary-shade) 0%, var(--ion-color-secondary-shade) 100%);
-  --background-focused: linear-gradient(135deg, var(--ion-color-primary-shade) 0%, var(--ion-color-secondary-shade) 100%);
+  --background: linear-gradient(
+    135deg,
+    var(--ion-color-primary) 0%,
+    var(--ion-color-secondary) 100%
+  );
+  --background-hover: linear-gradient(
+    135deg,
+    var(--ion-color-primary-shade) 0%,
+    var(--ion-color-secondary-shade) 100%
+  );
+  --background-focused: linear-gradient(
+    135deg,
+    var(--ion-color-primary-shade) 0%,
+    var(--ion-color-secondary-shade) 100%
+  );
   --box-shadow: 0 12px 28px rgba(138, 107, 230, 0.35);
   text-transform: none;
   transition: all 0.3s ease;

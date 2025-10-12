@@ -126,6 +126,12 @@ export function LoginPage() {
 
               <div className="form-footer">
                 <p className="footer-text">
+                  ¿No tienes cuenta?{" "}
+                  <a href="/register" className="footer-link">
+                    Regístrate aquí
+                  </a>
+                </p>
+                <p className="footer-terms">
                   Al continuar, aceptas nuestros{" "}
                   <a href="#" className="footer-link">
                     Términos de Servicio

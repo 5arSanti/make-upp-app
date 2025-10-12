@@ -10,7 +10,12 @@ export class ProfileRepository extends BaseRepositoryImpl<Profile> {
   async findByUserId(userId: string): Promise<Profile | null> {
     const { data, error } = await supabase
       .from(this.tableName)
-      .select("*")
+      .select(
+        `
+        *,
+        role:roles(name, description)
+      `
+      )
       .eq("id", userId)
       .single();
 

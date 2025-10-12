@@ -16,9 +16,10 @@ import {
   checkmarkCircleOutline,
 } from "ionicons/icons";
 
-import { ProfileController, AuthController, AuthSession } from "../../services";
-import { Session } from "@supabase/supabase-js";
+import { ProfileController, AuthController } from "../../services";
+import { AuthSession, Session } from "@supabase/supabase-js";
 import "./Account.css";
+import { UserRole } from "../../services/auth/types";
 
 // Helper function to convert AuthSession to Session
 const convertAuthSessionToSession = (
@@ -27,7 +28,7 @@ const convertAuthSessionToSession = (
   if (!authSession) return null;
   return {
     ...authSession,
-    token_type: "bearer" as const,
+    token_type: "bearer",
   } as Session;
 };
 
@@ -51,6 +52,7 @@ export function AccountPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [userRole, setUserRole] = useState<string | undefined>(undefined);
 
   const profileController = new ProfileController();
   const authController = new AuthController();
@@ -100,6 +102,14 @@ export function AccountPage() {
       if (profileData) {
         setUsername(profileData.username);
         setFullName(profileData.full_name || "");
+        // Extract role name from the joined data
+        if (
+          profileData.role &&
+          typeof profileData.role === "object" &&
+          "name" in profileData.role
+        ) {
+          setUserRole(profileData.role.name);
+        }
       }
     } catch (error: unknown) {
       const message = getErrorMessage(error);
@@ -231,6 +241,21 @@ export function AccountPage() {
                   <p className="email-value">{session?.user?.email}</p>
                 </div>
               </div>
+
+              {/* Role display */}
+              {userRole && (
+                <div className="role-display">
+                  <IonIcon icon={personOutline} className="role-icon" />
+                  <div className="role-info">
+                    <p className="role-label">Tipo de cuenta</p>
+                    <p className="role-value">
+                      {userRole === UserRole.ADMIN && "👑 Administrador"}
+                      {userRole === UserRole.CUSTOMER && "🛍️ Comprador"}
+                      {userRole === UserRole.SELLER && "💄 Vendedor"}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

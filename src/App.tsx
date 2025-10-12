@@ -8,6 +8,7 @@ import "@ionic/react/css/ionic.bundle.css";
 /* Theme variables */
 import "./theme/variables.css";
 import { LoginPage } from "./pages/Login";
+import { RegisterPage } from "./pages/Register";
 import { OnboardingPage } from "./pages/Onboarding";
 import { GlobalNavigation } from "./components/Navigation";
 import { useEffect, useState } from "react";
@@ -133,6 +134,10 @@ const App: React.FC = () => {
                 </div>
               </div>
             )}
+          </Route>
+
+          <Route exact path="/register">
+            {!session ? <RegisterPage /> : <Redirect to="/" />}
           </Route>
 
           <Route exact path="/onboarding">

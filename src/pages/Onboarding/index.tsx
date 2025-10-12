@@ -5,17 +5,23 @@ import {
   IonIcon,
   IonInput,
   IonPage,
+  IonRadio,
+  IonRadioGroup,
+  IonItem,
+  IonLabel,
   useIonToast,
   useIonLoading,
   useIonRouter,
 } from "@ionic/react";
-import {
-  personOutline,
-  checkmarkCircleOutline,
-} from "ionicons/icons";
+import { personOutline, checkmarkCircleOutline } from "ionicons/icons";
 
-import { ProfileController, AuthController } from "../../services";
+import {
+  ProfileController,
+  AuthController,
+  RoleController,
+} from "../../services";
 import "./Onboarding.css";
+import { UserRole } from "../../services/auth/types";
 
 function getErrorMessage(error: unknown): string {
   if (typeof error === "string") {
@@ -31,9 +37,19 @@ function getErrorMessage(error: unknown): string {
   return "Ocurrió un error inesperado";
 }
 
+async function getRoleId(roleName: UserRole): Promise<number> {
+  const roleController = new RoleController();
+  const role = await roleController.getRoleByName(roleName);
+  if (!role) {
+    throw new Error(`Rol ${roleName} no encontrado`);
+  }
+  return role.id;
+}
+
 export function OnboardingPage() {
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
+  const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.CUSTOMER);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const profileController = new ProfileController();
@@ -94,6 +110,7 @@ export function OnboardingPage() {
       const updates = {
         username,
         full_name: fullName,
+        role_id: await getRoleId(selectedRole),
       };
 
       await profileController.updateProfile(user.id, updates);
@@ -192,14 +209,55 @@ export function OnboardingPage() {
                 <p className="input-hint">Mínimo 3 caracteres, único</p>
               </div>
 
+              {/* Role selection */}
+              <div className="role-selection">
+                <label className="input-label">
+                  Tipo de cuenta <span className="required">*</span>
+                </label>
+                <IonRadioGroup
+                  value={selectedRole}
+                  onIonChange={(e) => setSelectedRole(e.detail.value)}
+                >
+                  <IonItem className="role-item">
+                    <IonRadio slot="start" value={UserRole.CUSTOMER} />
+                    <IonLabel>
+                      <div className="role-content">
+                        <div className="role-header">
+                          <span className="role-icon">🛍️</span>
+                          <span className="role-name">Comprador</span>
+                        </div>
+                        <p className="role-description">
+                          Compra productos de belleza
+                        </p>
+                      </div>
+                    </IonLabel>
+                  </IonItem>
+                  <IonItem className="role-item">
+                    <IonRadio slot="start" value={UserRole.SELLER} />
+                    <IonLabel>
+                      <div className="role-content">
+                        <div className="role-header">
+                          <span className="role-icon">💄</span>
+                          <span className="role-name">Vendedor</span>
+                        </div>
+                        <p className="role-description">
+                          Vende productos en la plataforma
+                        </p>
+                      </div>
+                    </IonLabel>
+                  </IonItem>
+                </IonRadioGroup>
+              </div>
 
-              <IonButton 
-                type="submit" 
-                expand="block" 
+              <IonButton
+                type="submit"
+                expand="block"
                 className="submit-button"
                 disabled={isSubmitting}
               >
-                <span>{isSubmitting ? "Completando..." : "Completar perfil"}</span>
+                <span>
+                  {isSubmitting ? "Completando..." : "Completar perfil"}
+                </span>
                 <IonIcon icon={checkmarkCircleOutline} slot="end" />
               </IonButton>
             </form>
@@ -214,4 +272,3 @@ export function OnboardingPage() {
     </IonPage>
   );
 }
-
