@@ -8,9 +8,7 @@ import "@ionic/react/css/ionic.bundle.css";
 /* Theme variables */
 import "./theme/variables.css";
 import { LoginPage } from "./pages/Login";
-import { AccountPage } from "./pages/Account";
 import { OnboardingPage } from "./pages/Onboarding";
-import { HomePage } from "./pages/Home";
 import { GlobalNavigation } from "./components/Navigation";
 import { useEffect, useState } from "react";
 import { Session } from "@supabase/supabase-js";
@@ -56,7 +54,9 @@ const App: React.FC = () => {
       setLoading(true);
 
       try {
-        const hasProfileResult = await profileController.checkProfileExists(session.user.id);
+        const hasProfileResult = await profileController.checkProfileExists(
+          session.user.id
+        );
         console.log("Profile exists:", hasProfileResult);
         setHasProfile(hasProfileResult);
       } catch (error) {
@@ -145,10 +145,7 @@ const App: React.FC = () => {
 
           <Route exact path="/home">
             {session && hasProfile === true ? (
-              <>
-                <HomePage />
-                <GlobalNavigation />
-              </>
+              <GlobalNavigation />
             ) : (
               <Redirect to="/" />
             )}
@@ -156,10 +153,7 @@ const App: React.FC = () => {
 
           <Route exact path="/account">
             {session && hasProfile === true ? (
-              <>
-                <AccountPage />
-                <GlobalNavigation />
-              </>
+              <GlobalNavigation />
             ) : (
               <Redirect to="/" />
             )}
