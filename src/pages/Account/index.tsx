@@ -13,8 +13,17 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import { useEffect, useState } from "react";
-import { supabase } from "../../api/config/supabase-client";
+import { ProfileController, AuthController, AuthSession } from "../../services";
 import { Session } from "@supabase/supabase-js";
+
+// Helper function to convert AuthSession to Session
+const convertAuthSessionToSession = (authSession: AuthSession | null): Session | null => {
+  if (!authSession) return null;
+  return {
+    ...authSession,
+    token_type: "bearer" as const,
+  } as Session;
+};
 
 export function AccountPage() {
   const [showLoading, hideLoading] = useIonLoading();
@@ -27,16 +36,19 @@ export function AccountPage() {
     avatar_url: "",
   });
 
+  const profileController = new ProfileController();
+  const authController = new AuthController();
+
   useEffect(() => {
     const getSession = async () => {
-      setSession(
-        await supabase.auth.getSession().then((res) => res.data.session)
-      );
+      const session = await authController.getCurrentSession();
+      setSession(convertAuthSessionToSession(session));
     };
     getSession();
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+    authController.onAuthStateChange((_event, session) => {
+      setSession(convertAuthSessionToSession(session));
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -49,22 +61,16 @@ export function AccountPage() {
     console.log("get");
     await showLoading();
     try {
-      const user = await supabase.auth.getUser();
-      const { data, error, status } = await supabase
-        .from("profiles")
-        .select(`username, website, avatar_url`)
-        .eq("id", user!.data.user?.id)
-        .single();
+      const user = await authController.getCurrentUser();
+      if (!user) throw new Error("No hay usuario autenticado");
 
-      if (error && status !== 406) {
-        throw error;
-      }
-
-      if (data) {
+      const profileData = await profileController.getProfileByUserId(user.id);
+      
+      if (profileData) {
         setProfile({
-          username: data.username,
-          website: data.website,
-          avatar_url: data.avatar_url,
+          username: profileData.username,
+          website: profileData.website || "",
+          avatar_url: profileData.avatar_url || "",
         });
       }
     } catch (error: unknown) {
@@ -76,7 +82,7 @@ export function AccountPage() {
     }
   };
   const signOut = async () => {
-    await supabase.auth.signOut();
+    await authController.signOut();
     router.push("/", "forward", "replace");
   };
   const updateProfile = async (
@@ -89,20 +95,18 @@ export function AccountPage() {
     await showLoading();
 
     try {
-      const user = await supabase.auth.getUser();
+      const user = await authController.getCurrentUser();
+      if (!user) throw new Error("No hay usuario autenticado");
 
       const updates = {
-        id: user!.data.user?.id,
-        ...profile,
+        username: profile.username,
+        full_name: profile.username, // Using username as full_name for now
+        website: profile.website,
         avatar_url: avatar_url,
         updated_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase.from("profiles").upsert(updates);
-
-      if (error) {
-        throw error;
-      }
+      await profileController.updateProfile(user.id, updates);
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Error al actualizar perfil";

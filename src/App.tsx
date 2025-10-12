@@ -10,8 +10,11 @@ import "./theme/variables.css";
 import { LoginPage } from "./pages/Login";
 import { AccountPage } from "./pages/Account";
 import { OnboardingPage } from "./pages/Onboarding";
+import { HomePage } from "./pages/Home";
+import { GlobalNavigation } from "./components/Navigation";
 import { useEffect, useState } from "react";
 import { Session } from "@supabase/supabase-js";
+import { ProfileController } from "./services";
 
 setupIonicReact();
 
@@ -19,6 +22,7 @@ const App: React.FC = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
+  const profileController = new ProfileController();
 
   useEffect(() => {
     const getSession = async () => {
@@ -52,29 +56,9 @@ const App: React.FC = () => {
       setLoading(true);
 
       try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("username, full_name")
-          .eq("id", session.user.id)
-          .single();
-
-        console.log("Profile query result:", { data, error });
-
-        if (error) {
-          if (error.code === "PGRST116") {
-            console.log("Profile not found, setting hasProfile to false");
-            setHasProfile(false);
-          } else {
-            console.error("Error checking profile:", error);
-            setHasProfile(false);
-          }
-        } else if (data && data.username && data.username.trim().length >= 3) {
-          console.log("Profile found with username:", data.username);
-          setHasProfile(true);
-        } else {
-          console.log("Profile exists but incomplete:", data);
-          setHasProfile(false);
-        }
+        const hasProfileResult = await profileController.checkProfileExists(session.user.id);
+        console.log("Profile exists:", hasProfileResult);
+        setHasProfile(hasProfileResult);
       } catch (error) {
         console.error("Exception checking profile:", error);
         setHasProfile(false);
@@ -85,6 +69,7 @@ const App: React.FC = () => {
     };
 
     checkProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   if (loading) {
@@ -125,7 +110,7 @@ const App: React.FC = () => {
             ) : hasProfile === false ? (
               <Redirect to="/onboarding" />
             ) : hasProfile === true ? (
-              <Redirect to="/account" />
+              <Redirect to="/home" />
             ) : (
               <div
                 style={{
@@ -158,9 +143,23 @@ const App: React.FC = () => {
             )}
           </Route>
 
+          <Route exact path="/home">
+            {session && hasProfile === true ? (
+              <>
+                <HomePage />
+                <GlobalNavigation />
+              </>
+            ) : (
+              <Redirect to="/" />
+            )}
+          </Route>
+
           <Route exact path="/account">
             {session && hasProfile === true ? (
-              <AccountPage />
+              <>
+                <AccountPage />
+                <GlobalNavigation />
+              </>
             ) : (
               <Redirect to="/" />
             )}

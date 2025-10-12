@@ -14,7 +14,7 @@ import {
   arrowForwardOutline,
 } from "ionicons/icons";
 
-import { supabase } from "../../api/config/supabase-client";
+import { AuthController } from "../../services";
 import "./Login.css";
 
 function getErrorMessage(error: unknown): string {
@@ -33,6 +33,7 @@ function getErrorMessage(error: unknown): string {
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
+  const authController = new AuthController();
 
   const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
@@ -41,7 +42,7 @@ export function LoginPage() {
     e.preventDefault();
     await showLoading();
     try {
-      await supabase.auth.signInWithOtp({ email });
+      await authController.signInWithOtp({ email });
       await showToast({
         message: "✨ Revisa tu email para el enlace de acceso",
         duration: 3000,

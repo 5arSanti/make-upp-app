@@ -15,7 +15,7 @@ import {
   checkmarkCircleOutline,
 } from "ionicons/icons";
 
-import { supabase } from "../../api/config/supabase-client";
+import { ProfileController, AuthController } from "../../services";
 import "./Onboarding.css";
 
 function getErrorMessage(error: unknown): string {
@@ -37,6 +37,9 @@ export function OnboardingPage() {
   const [fullName, setFullName] = useState("");
   const [website, setWebsite] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const profileController = new ProfileController();
+  const authController = new AuthController();
 
   const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
@@ -84,27 +87,19 @@ export function OnboardingPage() {
     }
 
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const user = await authController.getCurrentUser();
 
       if (!user) {
         throw new Error("No hay usuario autenticado");
       }
 
       const updates = {
-        id: user.id,
         username,
         full_name: fullName,
-        website: website || null,
-        updated_at: new Date().toISOString(),
+        website: website || undefined,
       };
 
-      const { error } = await supabase.from("profiles").upsert(updates);
-
-      if (error) {
-        throw error;
-      }
+      await profileController.updateProfile(user.id, updates);
 
       try {
         await showToast({
