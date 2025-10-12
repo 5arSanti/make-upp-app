@@ -1,5 +1,12 @@
 #!/usr/bin/env node
 
+import { config } from "dotenv";
+import path from "path";
+
+// Load environment variables from the project root
+config({ path: path.resolve(process.cwd(), ".env") });
+
+// Import databaseSeeder after loading env vars
 import { databaseSeeder } from "./src/utils/databaseSeeder.js";
 
 async function main() {
