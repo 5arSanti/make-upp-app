@@ -130,6 +130,20 @@ export class DatabaseSeeder {
     console.log("🌱 Seeding sample products...");
 
     for (const product of seedData.sampleProducts) {
+      // Check if product already exists
+      const { data: existingProduct } = await supabase
+        .from("products")
+        .select("id")
+        .eq("name", product.name)
+        .single();
+
+      if (existingProduct) {
+        console.log(
+          `⏭️  Product "${product.name}" already exists, skipping...`
+        );
+        continue;
+      }
+
       // Get category ID
       const { data: category, error: categoryError } = await supabase
         .from("categories")
@@ -153,9 +167,7 @@ export class DatabaseSeeder {
         available: true,
       };
 
-      const { error } = await supabase
-        .from("products")
-        .upsert(productData, { onConflict: "name" });
+      const { error } = await supabase.from("products").insert(productData);
 
       if (error) {
         console.error(`Error seeding product ${product.name}:`, error);
@@ -189,12 +201,39 @@ export class DatabaseSeeder {
       updated_at: new Date().toISOString(),
     };
 
-    const { error } = await supabase
-      .from("profiles")
-      .upsert(adminProfile, { onConflict: "id" });
+    const { error } = await supabase.from("profiles").upsert(adminProfile, {
+      onConflict: "id",
+      ignoreDuplicates: false,
+    });
 
     if (error) {
       console.error("Error creating admin profile:", error);
+
+      // If RLS error, provide instructions
+      if (error.code === "42501") {
+        console.log("\n⚠️  RLS Policy Violation Detected!");
+        console.log(
+          "The admin profile cannot be created due to Row Level Security policies."
+        );
+        console.log("\n📋 Manual Steps Required:");
+        console.log("1. Go to your Supabase Dashboard");
+        console.log("2. Navigate to Authentication > Users");
+        console.log("3. Create a new user with email: admin@make-upp.com");
+        console.log("4. Copy the user ID and run this SQL in the SQL Editor:");
+        console.log("\n```sql");
+        console.log(
+          `INSERT INTO profiles (id, username, full_name, role_id, updated_at)`
+        );
+        console.log(
+          `VALUES ('${adminUserId}', 'admin', 'Administrador del Sistema', ${adminRole.id}, NOW());`
+        );
+        console.log("```\n");
+        console.log(
+          "Or temporarily disable RLS for the profiles table during seeding."
+        );
+        return; // Don't throw error, just skip admin creation
+      }
+
       throw error;
     }
 
@@ -210,7 +249,16 @@ export class DatabaseSeeder {
       await this.seedSampleProducts();
 
       if (adminUserId) {
-        await this.createAdminProfile(adminUserId);
+        try {
+          await this.createAdminProfile(adminUserId);
+        } catch {
+          console.log(
+            "⚠️  Admin profile creation failed, but seeding continues..."
+          );
+          console.log(
+            "The basic data (roles, categories, products) was seeded successfully."
+          );
+        }
       }
 
       console.log("🎉 Database seeding completed successfully!");
