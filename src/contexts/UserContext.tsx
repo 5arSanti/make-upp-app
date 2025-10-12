@@ -43,6 +43,8 @@ export function UserProvider({ children }: UserProviderProps) {
 
       console.log("👤 Getting current user...");
       const currentUser = await authController.getCurrentUser();
+      console.log("👤 Current user:", currentUser);
+      
       if (!currentUser) {
         console.log("❌ No current user found");
         setUser(null);
@@ -100,14 +102,17 @@ export function UserProvider({ children }: UserProviderProps) {
     // Listen to auth state changes
     console.log("👂 Setting up auth state listener...");
     const { data: { subscription } } = authController.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         console.log("🔔 Auth state changed:", event, !!session);
         if (event === "SIGNED_OUT" || !session) {
           console.log("🚪 User signed out, clearing data");
           clearUserData();
         } else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
           console.log("🔑 User signed in or token refreshed, refreshing data");
-          await refreshUserData();
+          // Use setTimeout to avoid async in callback as per Supabase docs
+          setTimeout(async () => {
+            await refreshUserData();
+          }, 0);
         }
       }
     );
