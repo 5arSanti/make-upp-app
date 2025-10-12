@@ -11,7 +11,6 @@ import {
 } from "@ionic/react";
 import {
   personOutline,
-  globeOutline,
   checkmarkCircleOutline,
 } from "ionicons/icons";
 
@@ -35,7 +34,6 @@ function getErrorMessage(error: unknown): string {
 export function OnboardingPage() {
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
-  const [website, setWebsite] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const profileController = new ProfileController();
@@ -96,7 +94,6 @@ export function OnboardingPage() {
       const updates = {
         username,
         full_name: fullName,
-        website: website || undefined,
       };
 
       await profileController.updateProfile(user.id, updates);
@@ -195,22 +192,6 @@ export function OnboardingPage() {
                 <p className="input-hint">Mínimo 3 caracteres, único</p>
               </div>
 
-              <div className="input-wrapper">
-                <label className="input-label">
-                  Sitio web <span className="optional">(opcional)</span>
-                </label>
-                <div className="input-container">
-                  <IonIcon icon={globeOutline} className="input-icon" />
-                  <IonInput
-                    value={website}
-                    name="website"
-                    onIonChange={(e) => setWebsite(e.detail.value ?? "")}
-                    type="url"
-                    placeholder="https://tu-sitio.com"
-                    className="custom-input"
-                  />
-                </div>
-              </div>
 
               <IonButton 
                 type="submit" 
