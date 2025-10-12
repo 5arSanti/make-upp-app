@@ -40,7 +40,10 @@ export function AccountPage() {
   }, []);
 
   useEffect(() => {
-    getProfile();
+    if (session) {
+      getProfile();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
   const getProfile = async () => {
     console.log("get");
@@ -64,8 +67,10 @@ export function AccountPage() {
           avatar_url: data.avatar_url,
         });
       }
-    } catch (error: any) {
-      showToast({ message: error.message, duration: 5000 });
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Error al cargar perfil";
+      showToast({ message, duration: 5000 });
     } finally {
       await hideLoading();
     }
@@ -74,7 +79,10 @@ export function AccountPage() {
     await supabase.auth.signOut();
     router.push("/", "forward", "replace");
   };
-  const updateProfile = async (e?: any, avatar_url: string = "") => {
+  const updateProfile = async (
+    e?: React.FormEvent<HTMLFormElement>,
+    avatar_url: string = ""
+  ) => {
     e?.preventDefault();
 
     console.log("update ");
@@ -87,7 +95,7 @@ export function AccountPage() {
         id: user!.data.user?.id,
         ...profile,
         avatar_url: avatar_url,
-        updated_at: new Date(),
+        updated_at: new Date().toISOString(),
       };
 
       const { error } = await supabase.from("profiles").upsert(updates);
@@ -95,8 +103,10 @@ export function AccountPage() {
       if (error) {
         throw error;
       }
-    } catch (error: any) {
-      showToast({ message: error.message, duration: 5000 });
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Error al actualizar perfil";
+      showToast({ message, duration: 5000 });
     } finally {
       await hideLoading();
     }
