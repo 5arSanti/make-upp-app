@@ -1,5 +1,5 @@
 import { supabase } from "../../config/supabase-client";
-import { AuthUser, SignInWithOtpDto, AuthSession } from "./types";
+import { AuthSession, AuthUser, SignInWithOtpDto } from "./types";
 
 export class AuthService {
   async getCurrentUser(): Promise<AuthUser | null> {

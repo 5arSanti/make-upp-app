@@ -1,7 +1,6 @@
 import { Redirect, Route } from "react-router-dom";
 import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { supabase } from "./config/supabase-client";
 
 import "@ionic/react/css/ionic.bundle.css";
 
@@ -11,69 +10,16 @@ import { LoginPage } from "./pages/Login";
 import { RegisterPage } from "./pages/Register";
 import { OnboardingPage } from "./pages/Onboarding";
 import { GlobalNavigation } from "./components/Navigation";
-import { useEffect, useState } from "react";
-import { Session } from "@supabase/supabase-js";
-import { ProfileController } from "./services";
+import { UserProvider, useUser } from "./contexts/useUser";
 
 setupIonicReact();
 
-const App: React.FC = () => {
-  const [session, setSession] = useState<Session | null>(null);
-  const [hasProfile, setHasProfile] = useState<boolean | null>(null);
-  const [loading, setLoading] = useState(true);
-  const profileController = new ProfileController();
+// Componente interno que usa el contexto
+const AppContent: React.FC = () => {
+  const { user, profile, isLoading } = useUser();
+  console.log(isLoading);
 
-  useEffect(() => {
-    const getSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      setSession(session);
-    };
-    getSession();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setHasProfile(null); // Reset profile check on auth change
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const checkProfile = async () => {
-      if (!session) {
-        console.log("No session, setting hasProfile to null");
-        setHasProfile(null);
-        setLoading(false);
-        return;
-      }
-
-      console.log("Checking profile for user:", session.user.id);
-      setLoading(true);
-
-      try {
-        const hasProfileResult = await profileController.checkProfileExists(
-          session.user.id
-        );
-        console.log("Profile exists:", hasProfileResult);
-        setHasProfile(hasProfileResult);
-      } catch (error) {
-        console.error("Exception checking profile:", error);
-        setHasProfile(false);
-      } finally {
-        console.log("Setting loading to false");
-        setLoading(false);
-      }
-    };
-
-    checkProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <IonApp>
         <div
@@ -99,14 +45,14 @@ const App: React.FC = () => {
     );
   }
 
-  console.log("Rendering with session:", !!session, "hasProfile:", hasProfile);
+  const hasProfile = profile !== null;
 
   return (
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
           <Route exact path="/">
-            {!session ? (
+            {!user ? (
               <LoginPage />
             ) : hasProfile === false ? (
               <Redirect to="/onboarding" />
@@ -137,11 +83,11 @@ const App: React.FC = () => {
           </Route>
 
           <Route exact path="/register">
-            {!session ? <RegisterPage /> : <Redirect to="/" />}
+            {!user ? <RegisterPage /> : <Redirect to="/" />}
           </Route>
 
           <Route exact path="/onboarding">
-            {session && hasProfile === false ? (
+            {user && hasProfile === false ? (
               <OnboardingPage />
             ) : (
               <Redirect to="/" />
@@ -149,7 +95,7 @@ const App: React.FC = () => {
           </Route>
 
           <Route exact path="/home">
-            {session && hasProfile === true ? (
+            {user && hasProfile === true ? (
               <GlobalNavigation />
             ) : (
               <Redirect to="/" />
@@ -157,7 +103,7 @@ const App: React.FC = () => {
           </Route>
 
           <Route exact path="/account">
-            {session && hasProfile === true ? (
+            {user && hasProfile === true ? (
               <GlobalNavigation />
             ) : (
               <Redirect to="/" />
@@ -165,7 +111,7 @@ const App: React.FC = () => {
           </Route>
 
           <Route exact path="/settings">
-            {session && hasProfile === true ? (
+            {user && hasProfile === true ? (
               <GlobalNavigation />
             ) : (
               <Redirect to="/" />
@@ -173,7 +119,7 @@ const App: React.FC = () => {
           </Route>
 
           <Route exact path="/admin">
-            {session && hasProfile === true ? (
+            {user && hasProfile === true ? (
               <GlobalNavigation />
             ) : (
               <Redirect to="/" />
@@ -182,6 +128,14 @@ const App: React.FC = () => {
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <UserProvider>
+      <AppContent />
+    </UserProvider>
   );
 };
 

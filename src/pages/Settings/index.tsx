@@ -37,8 +37,8 @@ import {
   logOutOutline,
 } from "ionicons/icons";
 
-import { ProfileController, AuthController, UserRole } from "../../services";
-import { useRolePermissions } from "../../utils/roleGuards";
+import { AuthController, UserRole } from "../../services";
+import { useUserPermissions } from "../../contexts/useUser";
 import "./Settings.css";
 
 function getErrorMessage(error: unknown): string {
@@ -56,37 +56,12 @@ function getErrorMessage(error: unknown): string {
 }
 
 export function SettingsPage() {
-  const [userRole, setUserRole] = useState<string | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const profileController = new ProfileController();
+  const permissions = useUserPermissions();
   const authController = new AuthController();
-  const permissions = useRolePermissions(userRole);
 
   const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
   const router = useIonRouter();
-
-  useEffect(() => {
-    getUserRole();
-  }, []);
-
-  const getUserRole = async () => {
-    try {
-      const user = await authController.getCurrentUser();
-      if (!user) throw new Error("No hay usuario autenticado");
-
-      const profileData = await profileController.getProfileByUserId(user.id);
-      if (profileData?.role && typeof profileData.role === "object" && "name" in profileData.role) {
-        setUserRole(profileData.role.name);
-      }
-    } catch (error: unknown) {
-      const message = getErrorMessage(error);
-      await showToast({ message, duration: 5000, color: "danger" });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleSignOut = async () => {
     try {
@@ -115,19 +90,6 @@ export function SettingsPage() {
     router.push(path, "forward");
   };
 
-  if (isLoading) {
-    return (
-      <IonPage>
-        <IonContent fullscreen className="settings-page">
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p>Cargando configuración...</p>
-          </div>
-        </IonContent>
-      </IonPage>
-    );
-  }
-
   return (
     <IonPage>
       <IonContent fullscreen className="settings-page">
@@ -142,16 +104,20 @@ export function SettingsPage() {
             <div className="header-content">
               <IonIcon icon={settingsOutline} className="header-icon" />
               <h1 className="header-title">Configuración</h1>
-              <p className="header-subtitle">Gestiona tu cuenta y preferencias</p>
-              
+              <p className="header-subtitle">
+                Gestiona tu cuenta y preferencias
+              </p>
+
               {/* Role Badge */}
-              {userRole && (
+              {permissions.userRole && (
                 <IonChip className="role-chip">
                   <IonIcon icon={shieldOutline} />
                   <IonLabel>
-                    {userRole === UserRole.ADMIN && "👑 Administrador"}
-                    {userRole === UserRole.CUSTOMER && "🛍️ Comprador"}
-                    {userRole === UserRole.SELLER && "💄 Vendedor"}
+                    {permissions.userRole === UserRole.ADMIN &&
+                      "👑 Administrador"}
+                    {permissions.userRole === UserRole.CUSTOMER &&
+                      "🛍️ Comprador"}
+                    {permissions.userRole === UserRole.SELLER && "💄 Vendedor"}
                   </IonLabel>
                 </IonChip>
               )}
@@ -168,7 +134,9 @@ export function SettingsPage() {
                       <IonIcon icon={personOutline} />
                       Cuenta
                     </IonCardTitle>
-                    <IonCardSubtitle>Gestiona tu información personal</IonCardSubtitle>
+                    <IonCardSubtitle>
+                      Gestiona tu información personal
+                    </IonCardSubtitle>
                   </IonCardHeader>
                   <IonCardContent>
                     <IonList className="settings-list">
@@ -177,7 +145,7 @@ export function SettingsPage() {
                         <IonLabel>Mi Perfil</IonLabel>
                         <IonNote slot="end">Editar información</IonNote>
                       </IonItem>
-                      
+
                       <IonItem button>
                         <IonIcon icon={notificationsOutline} slot="start" />
                         <IonLabel>Notificaciones</IonLabel>
@@ -206,7 +174,7 @@ export function SettingsPage() {
                           <IonLabel>Mi Carrito</IonLabel>
                           <IonNote slot="end">Próximamente</IonNote>
                         </IonItem>
-                        
+
                         <IonItem button>
                           <IonIcon icon={receiptOutline} slot="start" />
                           <IonLabel>Mis Pedidos</IonLabel>
@@ -236,7 +204,7 @@ export function SettingsPage() {
                           <IonLabel>Agregar Producto</IonLabel>
                           <IonNote slot="end">Próximamente</IonNote>
                         </IonItem>
-                        
+
                         <IonItem button>
                           <IonIcon icon={listOutline} slot="start" />
                           <IonLabel>Mis Productos</IonLabel>
@@ -266,19 +234,19 @@ export function SettingsPage() {
                           <IonLabel>Crear Producto</IonLabel>
                           <IonNote slot="end">Próximamente</IonNote>
                         </IonItem>
-                        
+
                         <IonItem button>
                           <IonIcon icon={listOutline} slot="start" />
                           <IonLabel>Gestionar Productos</IonLabel>
                           <IonNote slot="end">Próximamente</IonNote>
                         </IonItem>
-                        
+
                         <IonItem button>
                           <IonIcon icon={receiptOutline} slot="start" />
                           <IonLabel>Pedidos y Facturas</IonLabel>
                           <IonNote slot="end">Próximamente</IonNote>
                         </IonItem>
-                        
+
                         <IonItem button>
                           <IonIcon icon={analyticsOutline} slot="start" />
                           <IonLabel>Analíticas</IonLabel>
@@ -307,7 +275,7 @@ export function SettingsPage() {
                         <IonLabel>Centro de Ayuda</IonLabel>
                         <IonNote slot="end">Próximamente</IonNote>
                       </IonItem>
-                      
+
                       <IonItem button>
                         <IonIcon icon={informationCircleOutline} slot="start" />
                         <IonLabel>Acerca de Make-upp</IonLabel>

@@ -5,35 +5,11 @@ import { HomePage } from "../../pages/Home";
 import { AccountPage } from "../../pages/Account";
 import { SettingsPage } from "../../pages/Settings";
 import { AdminPage } from "../../pages/Admin";
-import { useState, useEffect } from "react";
-import { ProfileController, AuthController, UserRole } from "../../services";
-import { useRolePermissions } from "../../utils/roleGuards";
+import { useUserPermissions } from "../../contexts/useUser";
 import "./Navigation.css";
 
 export function GlobalNavigation() {
-  const [userRole, setUserRole] = useState<string | undefined>(undefined);
-  const permissions = useRolePermissions(userRole);
-  
-  const profileController = new ProfileController();
-  const authController = new AuthController();
-
-  useEffect(() => {
-    getUserRole();
-  }, []);
-
-  const getUserRole = async () => {
-    try {
-      const user = await authController.getCurrentUser();
-      if (!user) return;
-
-      const profileData = await profileController.getProfileByUserId(user.id);
-      if (profileData?.role && typeof profileData.role === "object" && "name" in profileData.role) {
-        setUserRole(profileData.role.name);
-      }
-    } catch (error) {
-      console.error("Error getting user role:", error);
-    }
-  };
+  const permissions = useUserPermissions();
 
   return (
     <IonTabs>

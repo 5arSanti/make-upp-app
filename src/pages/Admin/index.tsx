@@ -1,24 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   IonButton,
   IonContent,
-  IonIcon,
-  IonItem,
-  IonLabel,
+  IonIcon, IonLabel,
   IonList,
   IonPage,
   IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonGrid,
+  IonCardContent, IonGrid,
   IonRow,
   IonCol,
   IonChip,
-  IonNote,
-  IonBadge,
-  IonSegment,
+  IonNote, IonSegment,
   IonSegmentButton,
   IonSearchbar,
   IonRefresher,
@@ -26,22 +18,17 @@ import {
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   useIonToast,
-  useIonLoading,
+  useIonLoading
 } from "@ionic/react";
 import {
   receiptOutline,
-  analyticsOutline,
-  peopleOutline,
-  storefrontOutline,
-  checkmarkCircleOutline,
+  analyticsOutline, checkmarkCircleOutline,
   timeOutline,
-  alertCircleOutline,
-  searchOutline,
-  refreshOutline,
+  alertCircleOutline
 } from "ionicons/icons";
 
-import { ProfileController, AuthController, UserRole } from "../../services";
-import { useRolePermissions } from "../../utils/roleGuards";
+import { AuthController } from "../../services";
+import { useUserPermissions } from "../../contexts/useUser";
 import "./Admin.css";
 
 function getErrorMessage(error: unknown): string {
@@ -59,42 +46,19 @@ function getErrorMessage(error: unknown): string {
 }
 
 export function AdminPage() {
-  const [userRole, setUserRole] = useState<string | undefined>(undefined);
   const [selectedSegment, setSelectedSegment] = useState("orders");
   const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
 
-  const profileController = new ProfileController();
+  const permissions = useUserPermissions();
   const authController = new AuthController();
-  const permissions = useRolePermissions(userRole);
 
   const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
 
-  useEffect(() => {
-    getUserRole();
-  }, []);
-
-  const getUserRole = async () => {
-    try {
-      const user = await authController.getCurrentUser();
-      if (!user) throw new Error("No hay usuario autenticado");
-
-      const profileData = await profileController.getProfileByUserId(user.id);
-      if (profileData?.role && typeof profileData.role === "object" && "name" in profileData.role) {
-        setUserRole(profileData.role.name);
-      }
-    } catch (error: unknown) {
-      const message = getErrorMessage(error);
-      await showToast({ message, duration: 5000, color: "danger" });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleRefresh = async (event: CustomEvent) => {
     try {
-      await getUserRole();
+      // Refresh user data through context
+      await permissions.refreshUserData();
     } catch (error) {
       console.error("Error refreshing:", error);
     } finally {
@@ -117,7 +81,7 @@ export function AdminPage() {
       id: "ORD-002",
       customer: "Ana López",
       email: "ana@email.com",
-      total: 156.50,
+      total: 156.5,
       status: "paid",
       date: "2024-01-14",
       items: 5,
@@ -147,7 +111,7 @@ export function AdminPage() {
       id: "INV-001",
       orderId: "ORD-002",
       customer: "Ana López",
-      total: 156.50,
+      total: 156.5,
       issuedAt: "2024-01-14",
       status: "paid",
     },
@@ -206,19 +170,6 @@ export function AdminPage() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <IonPage>
-        <IonContent fullscreen className="admin-page">
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p>Cargando panel de administración...</p>
-          </div>
-        </IonContent>
-      </IonPage>
-    );
-  }
-
   // Check if user is admin
   if (!permissions.isAdmin) {
     return (
@@ -252,8 +203,10 @@ export function AdminPage() {
             <div className="header-content">
               <IonIcon icon={receiptOutline} className="header-icon" />
               <h1 className="header-title">Panel de Administración</h1>
-              <p className="header-subtitle">Gestiona pedidos, facturas y analíticas</p>
-              
+              <p className="header-subtitle">
+                Gestiona pedidos, facturas y analíticas
+              </p>
+
               <IonChip className="admin-chip">
                 <IonIcon icon={analyticsOutline} />
                 <IonLabel>👑 Administrador</IonLabel>
@@ -277,12 +230,15 @@ export function AdminPage() {
                   </IonCardContent>
                 </IonCard>
               </IonCol>
-              
+
               <IonCol size="6" sizeMd="3">
                 <IonCard className="stat-card">
                   <IonCardContent>
                     <div className="stat-content">
-                      <IonIcon icon={checkmarkCircleOutline} className="stat-icon" />
+                      <IonIcon
+                        icon={checkmarkCircleOutline}
+                        className="stat-icon"
+                      />
                       <div className="stat-info">
                         <h3>18</h3>
                         <p>Completados</p>
@@ -291,7 +247,7 @@ export function AdminPage() {
                   </IonCardContent>
                 </IonCard>
               </IonCol>
-              
+
               <IonCol size="6" sizeMd="3">
                 <IonCard className="stat-card">
                   <IonCardContent>
@@ -305,7 +261,7 @@ export function AdminPage() {
                   </IonCardContent>
                 </IonCard>
               </IonCol>
-              
+
               <IonCol size="6" sizeMd="3">
                 <IonCard className="stat-card">
                   <IonCardContent>
@@ -369,7 +325,7 @@ export function AdminPage() {
                           </IonChip>
                         </div>
                       </div>
-                      
+
                       <div className="item-details">
                         <div className="detail-item">
                           <IonNote>Total</IonNote>
@@ -384,7 +340,7 @@ export function AdminPage() {
                           <span className="detail-value">{order.date}</span>
                         </div>
                       </div>
-                      
+
                       <div className="item-actions">
                         <IonButton size="small" fill="outline">
                           Ver Detalles
@@ -411,7 +367,9 @@ export function AdminPage() {
                         <div className="item-info">
                           <h3 className="item-title">{invoice.id}</h3>
                           <p className="item-subtitle">{invoice.customer}</p>
-                          <p className="item-email">Pedido: {invoice.orderId}</p>
+                          <p className="item-email">
+                            Pedido: {invoice.orderId}
+                          </p>
                         </div>
                         <div className="item-status">
                           <IonChip color={getStatusColor(invoice.status)}>
@@ -420,7 +378,7 @@ export function AdminPage() {
                           </IonChip>
                         </div>
                       </div>
-                      
+
                       <div className="item-details">
                         <div className="detail-item">
                           <IonNote>Total</IonNote>
@@ -428,10 +386,12 @@ export function AdminPage() {
                         </div>
                         <div className="detail-item">
                           <IonNote>Emitida</IonNote>
-                          <span className="detail-value">{invoice.issuedAt}</span>
+                          <span className="detail-value">
+                            {invoice.issuedAt}
+                          </span>
                         </div>
                       </div>
-                      
+
                       <div className="item-actions">
                         <IonButton size="small" fill="outline">
                           Ver PDF
