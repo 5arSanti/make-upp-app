@@ -163,6 +163,22 @@ const App: React.FC = () => {
               <Redirect to="/" />
             )}
           </Route>
+
+          <Route exact path="/settings">
+            {session && hasProfile === true ? (
+              <GlobalNavigation />
+            ) : (
+              <Redirect to="/" />
+            )}
+          </Route>
+
+          <Route exact path="/admin">
+            {session && hasProfile === true ? (
+              <GlobalNavigation />
+            ) : (
+              <Redirect to="/" />
+            )}
+          </Route>
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
