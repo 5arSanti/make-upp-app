@@ -1,5 +1,7 @@
 // Export all services
 
+export * from "./enums";
+
 export { ProfileController } from "./profile/ProfileController";
 export { ProfileService } from "./profile/ProfileService";
 export { ProfileRepository } from "./profile/ProfileRepository";

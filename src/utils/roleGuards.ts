@@ -1,4 +1,4 @@
-import { UserRole } from "../services/auth/types";
+import { UserRole } from "../services/enums";
 
 export interface RoleGuard {
   hasRole: (userRole: string | undefined) => boolean;

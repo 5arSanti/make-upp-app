@@ -16,10 +16,9 @@ import {
   checkmarkCircleOutline,
 } from "ionicons/icons";
 
-import { ProfileController, AuthController } from "../../services";
+import { ProfileController, AuthController, UserRole } from "../../services";
 import { AuthSession, Session } from "@supabase/supabase-js";
 import "./Account.css";
-import { UserRole } from "../../services/auth/types";
 
 // Helper function to convert AuthSession to Session
 const convertAuthSessionToSession = (

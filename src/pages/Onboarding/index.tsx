@@ -19,9 +19,9 @@ import {
   ProfileController,
   AuthController,
   RoleController,
+  UserRole,
 } from "../../services";
 import "./Onboarding.css";
-import { UserRole } from "../../services/auth/types";
 
 function getErrorMessage(error: unknown): string {
   if (typeof error === "string") {

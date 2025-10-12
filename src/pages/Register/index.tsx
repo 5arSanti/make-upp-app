@@ -20,9 +20,8 @@ import {
   checkmarkCircleOutline,
 } from "ionicons/icons";
 
-import { AuthController } from "../../services";
+import { AuthController, UserRole } from "../../services";
 import "./Register.css";
-import { UserRole } from "../../services/auth/types";
 
 function getErrorMessage(error: unknown): string {
   if (typeof error === "string") {

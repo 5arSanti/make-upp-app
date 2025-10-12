@@ -1,20 +1,20 @@
 import { supabase } from "../config/supabase-client";
-import { UserRole } from "../services/auth/types";
+import { UserRole, ProductCategory } from "../services/enums";
 
 export interface SeedData {
   roles: Array<{
-    name: string;
+    name: UserRole;
     description: string;
   }>;
   categories: Array<{
-    name: string;
+    name: ProductCategory;
     description: string;
   }>;
   sampleProducts: Array<{
     name: string;
     description: string;
     price: number;
-    categoryName: string;
+    category: ProductCategory;
   }>;
 }
 
@@ -26,28 +26,28 @@ const seedData: SeedData = {
   ],
   categories: [
     {
-      name: "Maquillaje Facial",
+      name: ProductCategory.FACIAL_MAKEUP,
       description: "Productos para el rostro: bases, correctores, polvos",
     },
     {
-      name: "Maquillaje de Ojos",
+      name: ProductCategory.EYE_MAKEUP,
       description: "Sombras, delineadores, máscaras de pestañas",
     },
     {
-      name: "Maquillaje de Labios",
+      name: ProductCategory.LIP_MAKEUP,
       description: "Labiales, brillos, delineadores de labios",
     },
     {
-      name: "Cuidado de la Piel",
+      name: ProductCategory.SKIN_CARE,
       description: "Cremas, limpiadores, tratamientos faciales",
     },
     {
-      name: "Herramientas de Maquillaje",
+      name: ProductCategory.MAKEUP_TOOLS,
       description: "Bróchas, esponjas, aplicadores",
     },
-    { name: "Fragancias", description: "Perfumes y colonias" },
+    { name: ProductCategory.FRAGRANCES, description: "Perfumes y colonias" },
     {
-      name: "Accesorios",
+      name: ProductCategory.ACCESSORIES,
       description: "Bolsos, estuches, organizadores de maquillaje",
     },
   ],
@@ -56,37 +56,37 @@ const seedData: SeedData = {
       name: "Base de Maquillaje Luxury",
       description: "Base de larga duración con acabado natural",
       price: 45.99,
-      categoryName: "Maquillaje Facial",
+      category: ProductCategory.FACIAL_MAKEUP,
     },
     {
       name: "Paleta de Sombras Premium",
       description: "12 sombras con pigmentos de alta calidad",
       price: 32.5,
-      categoryName: "Maquillaje de Ojos",
+      category: ProductCategory.EYE_MAKEUP,
     },
     {
       name: "Labial Mate de Larga Duración",
       description: "Labial mate que no se transfiere",
       price: 18.75,
-      categoryName: "Maquillaje de Labios",
+      category: ProductCategory.LIP_MAKEUP,
     },
     {
       name: "Crema Hidratante Anti-Edad",
       description: "Crema con ácido hialurónico y vitamina C",
       price: 65.0,
-      categoryName: "Cuidado de la Piel",
+      category: ProductCategory.SKIN_CARE,
     },
     {
       name: "Set de Brochas Profesionales",
       description: "12 brochas de alta calidad para maquillaje",
       price: 89.99,
-      categoryName: "Herramientas de Maquillaje",
+      category: ProductCategory.MAKEUP_TOOLS,
     },
     {
       name: "Perfume Signature",
       description: "Fragancia exclusiva de Make-upp",
       price: 125.0,
-      categoryName: "Fragancias",
+      category: ProductCategory.FRAGRANCES,
     },
   ],
 };
@@ -134,12 +134,12 @@ export class DatabaseSeeder {
       const { data: category, error: categoryError } = await supabase
         .from("categories")
         .select("id")
-        .eq("name", product.categoryName)
+        .eq("name", product.category)
         .single();
 
       if (categoryError) {
         console.error(
-          `Error finding category ${product.categoryName}:`,
+          `Error finding category ${product.category}:`,
           categoryError
         );
         continue;
