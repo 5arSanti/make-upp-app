@@ -1,4 +1,4 @@
-import { supabase } from "../../api/config/supabase-client";
+import { supabase } from "../../config/supabase-client";
 import { AuthUser, SignInWithOtpDto, AuthSession } from "./types";
 
 export class AuthService {

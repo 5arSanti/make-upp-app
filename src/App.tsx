@@ -1,7 +1,7 @@
 import { Redirect, Route } from "react-router-dom";
 import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { supabase } from "./api/config/supabase-client";
+import { supabase } from "./config/supabase-client";
 
 import "@ionic/react/css/ionic.bundle.css";
 

@@ -1,4 +1,4 @@
-import { supabase } from "../../api/config/supabase-client";
+import { supabase } from "../../config/supabase-client";
 import { BaseRepository } from "./interfaces";
 
 export abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {

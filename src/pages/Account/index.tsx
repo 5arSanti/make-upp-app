@@ -50,6 +50,7 @@ export function AccountPage() {
   const [fullName, setFullName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
 
   const profileController = new ProfileController();
   const authController = new AuthController();
@@ -71,14 +72,25 @@ export function AccountPage() {
   }, []);
 
   useEffect(() => {
-    if (session) {
+    if (session && !isLoadingProfile && (!username || !fullName)) {
       getProfile();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   const getProfile = async () => {
-    await showLoading();
+    if (isLoadingProfile) return; // Prevent multiple calls
+
+    setIsLoadingProfile(true);
+    try {
+      await showLoading({
+        message: "Cargando perfil...",
+        spinner: "crescent",
+      });
+    } catch (error) {
+      console.error("Error showing loading:", error);
+    }
+
     try {
       const user = await authController.getCurrentUser();
       if (!user) throw new Error("No hay usuario autenticado");
@@ -93,7 +105,12 @@ export function AccountPage() {
       const message = getErrorMessage(error);
       await showToast({ message, duration: 5000, color: "danger" });
     } finally {
-      await hideLoading();
+      try {
+        await hideLoading();
+      } catch (error) {
+        console.error("Error hiding loading:", error);
+      }
+      setIsLoadingProfile(false);
     }
   };
 

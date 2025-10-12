@@ -1,6 +1,6 @@
 import { BaseRepositoryImpl } from "../base/BaseRepository";
 import { Profile } from "./types";
-import { supabase } from "../../api/config/supabase-client";
+import { supabase } from "../../config/supabase-client";
 
 export class ProfileRepository extends BaseRepositoryImpl<Profile> {
   constructor() {
