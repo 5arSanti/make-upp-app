@@ -27,6 +27,7 @@ const App: React.FC = () => {
       setSession(session);
     });
   }, []);
+
   return (
     <IonApp>
       <IonReactRouter>
