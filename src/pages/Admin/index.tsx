@@ -16,9 +16,7 @@ import {
   IonRefresher,
   IonRefresherContent,
   IonInfiniteScroll,
-  IonInfiniteScrollContent,
-  useIonToast,
-  useIonLoading
+  IonInfiniteScrollContent
 } from "@ionic/react";
 import {
   receiptOutline,
@@ -27,33 +25,14 @@ import {
   alertCircleOutline
 } from "ionicons/icons";
 
-import { AuthController } from "../../services";
 import { useUserPermissions } from "../../contexts/useUser";
 import "./Admin.css";
-
-function getErrorMessage(error: unknown): string {
-  if (typeof error === "string") {
-    return error;
-  }
-  if (error && typeof error === "object") {
-    const asObj = error as Record<string, unknown>;
-    const desc = asObj["error_description"];
-    const msg = asObj["message"];
-    if (typeof desc === "string") return desc;
-    if (typeof msg === "string") return msg;
-  }
-  return "Ocurrió un error inesperado";
-}
 
 export function AdminPage() {
   const [selectedSegment, setSelectedSegment] = useState("orders");
   const [searchTerm, setSearchTerm] = useState("");
 
   const permissions = useUserPermissions();
-  const authController = new AuthController();
-
-  const [showLoading, hideLoading] = useIonLoading();
-  const [showToast] = useIonToast();
 
   const handleRefresh = async (event: CustomEvent) => {
     try {
