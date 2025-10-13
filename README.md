@@ -5,7 +5,7 @@
 ### Generar Iconos Personalizados
 
 1. Coloca tu icono SVG (512x512px) en `android/resources/icon.svg`
-2. Ejecuta: `npx capacitor-assets generate --iconBackgroundColor '#ffffff' --iconBackgroundColorDark '#000000' --splashBackgroundColor '#ffffff' --splashBackgroundColorDark '#000000'`
+2. Ejecuta: `npx capacitor-assets generate --iconBackgroundColor '#ffffff' --iconBackgroundColorDark '#000000' --splashBackgroundColor '#FFE3F3' --splashBackgroundColorDark '#000000'`
 
 ## Construir y Sincronizar Cambios
 
