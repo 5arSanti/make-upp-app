@@ -24,6 +24,7 @@ import {
   useIonLoading,
   useIonRouter,
 } from "@ionic/react";
+import { useParams } from "react-router-dom";
 import {
   addOutline,
   imageOutline,
@@ -61,6 +62,9 @@ function getErrorMessage(error: unknown): string {
 }
 
 export function CreateProductPage() {
+  const { id } = useParams<{ id: string }>();
+  const isEditMode = Boolean(id);
+  
   const [formData, setFormData] = useState<CreateProductDto>({
     name: "",
     description: "",
@@ -72,6 +76,7 @@ export function CreateProductPage() {
   const [imagePreview, setImagePreview] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(isEditMode);
 
   const permissions = useUserPermissions();
   const productController = new ProductController();
@@ -81,10 +86,13 @@ export function CreateProductPage() {
   const [showToast] = useIonToast();
   const router = useIonRouter();
 
-  // Load categories on component mount
+  // Load categories and product data on component mount
   useEffect(() => {
     loadCategories();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (isEditMode && id) {
+      loadProductData(parseInt(id));
+    }
+  }, [isEditMode, id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadCategories = async () => {
     try {
@@ -97,6 +105,35 @@ export function CreateProductPage() {
         duration: 3000,
         color: "danger",
       });
+    }
+  };
+
+  const loadProductData = async (productId: number) => {
+    try {
+      setIsLoading(true);
+      const product = await productController.findById(productId);
+      if (product) {
+        setFormData({
+          name: product.name,
+          description: product.description || "",
+          price: product.price,
+          available: product.available,
+          category_id: product.category_id,
+        });
+        if (product.image_url) {
+          setImagePreview(product.image_url);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading product:", error);
+      await showToast({
+        message: "Error al cargar el producto",
+        duration: 3000,
+        color: "danger",
+      });
+      router.push("/product-management");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -166,35 +203,54 @@ export function CreateProductPage() {
       }
 
       setIsSubmitting(true);
-      await showLoading({ message: "Creando producto..." });
-
-      // Create product with image
-      await productController.createProductWithImage(
-        formData,
-        selectedImage || undefined
-      );
-
-      await hideLoading();
-      await showToast({
-        message: "Producto creado exitosamente",
-        duration: 3000,
-        color: "success",
-        icon: checkmarkCircleOutline,
+      await showLoading({ 
+        message: isEditMode ? "Actualizando producto..." : "Creando producto..." 
       });
 
-      // Reset form
-      setFormData({
-        name: "",
-        description: "",
-        price: 0,
-        available: true,
-        category_id: undefined,
-      });
-      setSelectedImage(null);
-      setImagePreview("");
+      if (isEditMode && id) {
+        // Update existing product
+        await productController.updateProductWithImage(
+          parseInt(id),
+          formData,
+          selectedImage || undefined
+        );
+        
+        await hideLoading();
+        await showToast({
+          message: "Producto actualizado exitosamente",
+          duration: 3000,
+          color: "success",
+          icon: checkmarkCircleOutline,
+        });
+        
+        // Navigate back to product management
+        router.push("/product-management");
+      } else {
+        // Create new product
+        await productController.createProductWithImage(
+          formData,
+          selectedImage || undefined
+        );
 
-      // Navigate back or to products list
-      router.back();
+        await hideLoading();
+        await showToast({
+          message: "Producto creado exitosamente",
+          duration: 3000,
+          color: "success",
+          icon: checkmarkCircleOutline,
+        });
+
+        // Reset form
+        setFormData({
+          name: "",
+          description: "",
+          price: 0,
+          available: true,
+          category_id: undefined,
+        });
+        setSelectedImage(null);
+        setImagePreview("");
+      }
     } catch (error) {
       await hideLoading();
       console.error("Error creating product:", error);
@@ -231,6 +287,19 @@ export function CreateProductPage() {
     );
   }
 
+  if (isLoading) {
+    return (
+      <IonPage>
+        <IonContent fullscreen className="create-product-page">
+          <div className="loading-container">
+            <IonSpinner name="crescent" />
+            <p>Cargando producto...</p>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+  }
+
   return (
     <IonPage>
       <IonContent fullscreen className="create-product-page">
@@ -244,7 +313,9 @@ export function CreateProductPage() {
           <div className="create-product-header">
             <div className="header-content">
               <IonIcon icon={addOutline} className="header-icon" />
-              <h1 className="header-title">Crear Producto</h1>
+              <h1 className="header-title">
+                {isEditMode ? "Editar Producto" : "Crear Producto"}
+              </h1>
               <p className="header-subtitle">
                 Agrega un nuevo producto a tu catálogo
               </p>
@@ -436,7 +507,10 @@ export function CreateProductPage() {
               ) : (
                 <IonIcon icon={saveOutline} slot="start" />
               )}
-              {isSubmitting ? "Creando..." : "Crear Producto"}
+              {isSubmitting 
+                ? (isEditMode ? "Actualizando..." : "Creando...") 
+                : (isEditMode ? "Actualizar Producto" : "Crear Producto")
+              }
             </IonButton>
           </div>
 

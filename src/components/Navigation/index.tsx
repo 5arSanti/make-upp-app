@@ -65,6 +65,9 @@ export function GlobalNavigation() {
         <Route exact path="/my-invoices">
           <MyInvoicesPage />
         </Route>
+        <Route exact path="/edit-product/:id">
+          <CreateProductPage />
+        </Route>
         <Route exact path="/">
           <Redirect to="/home" />
         </Route>
