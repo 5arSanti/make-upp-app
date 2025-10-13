@@ -9,7 +9,11 @@
 .decoration {
   position: absolute;
   border-radius: 50%;
-  background: linear-gradient(45deg, rgba(255, 182, 193, 0.1), rgba(221, 160, 221, 0.1));
+  background: linear-gradient(
+    45deg,
+    rgba(255, 182, 193, 0.1),
+    rgba(221, 160, 221, 0.1)
+  );
   animation: float 6s ease-in-out infinite;
 }
 
@@ -38,8 +42,13 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(180deg); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
 }
 
 /* Loading container */
@@ -62,8 +71,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Access denied */
@@ -98,6 +111,7 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+  padding-bottom: var(--global-tabbar-safe-padding);
 }
 
 /* Header */
@@ -127,7 +141,11 @@
   font-weight: 700;
   color: var(--ion-color-dark);
   margin: 0 0 8px 0;
-  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--ion-color-primary),
+    var(--ion-color-secondary)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -141,7 +159,11 @@
 }
 
 .admin-chip {
-  --background: linear-gradient(135deg, var(--ion-color-secondary), var(--ion-color-primary));
+  --background: linear-gradient(
+    135deg,
+    var(--ion-color-secondary),
+    var(--ion-color-primary)
+  );
   --color: white;
   font-weight: 600;
   font-size: 0.9rem;
@@ -344,33 +366,33 @@
   .admin-container {
     padding: 16px;
   }
-  
+
   .header-content {
     padding: 24px 20px;
   }
-  
+
   .header-title {
     font-size: 2rem;
   }
-  
+
   .item-header {
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
   }
-  
+
   .item-status {
     align-self: flex-end;
   }
-  
+
   .item-details {
     gap: 16px;
   }
-  
+
   .item-actions {
     justify-content: stretch;
   }
-  
+
   .item-actions ion-button {
     flex: 1;
   }
@@ -380,34 +402,34 @@
   .admin-container {
     padding: 12px;
   }
-  
+
   .header-content {
     padding: 20px 16px;
   }
-  
+
   .header-title {
     font-size: 1.8rem;
   }
-  
+
   .stat-content {
     flex-direction: column;
     text-align: center;
     gap: 8px;
   }
-  
+
   .stat-icon {
     font-size: 24px;
   }
-  
+
   .stat-info h3 {
     font-size: 1.5rem;
   }
-  
+
   .item-details {
     flex-direction: column;
     gap: 12px;
   }
-  
+
   .item-actions {
     flex-direction: column;
   }

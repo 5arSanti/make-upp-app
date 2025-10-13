@@ -4,6 +4,8 @@ http://ionicframework.com/docs/theming/ */
 /* ===== MAKE-UPP LUXURY THEME ===== */
 :root {
   color-scheme: light;
+  /* Global safe padding for bottom tab bar overlap */
+  --global-tabbar-safe-padding: 96px;
 
   /* Brand palette: pink/purple luxury for Make-upp */
   --ion-color-primary: #e36ad6; /* signature pink-magenta */

@@ -34,7 +34,7 @@ export function GlobalNavigation() {
           <Redirect to="/home" />
         </Route>
       </IonRouterOutlet>
-      
+
       <IonTabBar slot="bottom" className="custom-tab-bar">
         <IonTabButton tab="home" href="/home">
           <IonIcon icon={homeOutline} />

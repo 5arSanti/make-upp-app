@@ -71,6 +71,7 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+  padding-bottom: var(--global-tabbar-safe-padding);
 }
 
 /* Header */
