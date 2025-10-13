@@ -5,19 +5,28 @@ import {
   IonIcon,
   IonLabel,
   IonRouterOutlet,
+  IonBadge,
 } from "@ionic/react";
-import { homeOutline, settingsOutline, receiptOutline } from "ionicons/icons";
+import {
+  homeOutline,
+  settingsOutline,
+  receiptOutline,
+  cartOutline,
+} from "ionicons/icons";
 import { Route, Redirect } from "react-router-dom";
 import { HomePage } from "../../pages/Home";
 import { AccountPage } from "../../pages/Account";
 import { SettingsPage } from "../../pages/Settings";
 import { AdminPage } from "../../pages/Admin";
 import { CreateProductPage } from "../../pages/CreateProduct";
+import { CartPage } from "../../pages/Cart";
 import { useUserPermissions } from "../../contexts/useUser";
+import { useCart } from "../../contexts/CartContext";
 import "./Navigation.css";
 
 export function GlobalNavigation() {
   const permissions = useUserPermissions();
+  const { cartItemCount } = useCart();
 
   return (
     <IonTabs>
@@ -37,6 +46,9 @@ export function GlobalNavigation() {
         <Route exact path="/create-product">
           <CreateProductPage />
         </Route>
+        <Route exact path="/cart">
+          <CartPage />
+        </Route>
         <Route exact path="/">
           <Redirect to="/home" />
         </Route>
@@ -46,6 +58,16 @@ export function GlobalNavigation() {
         <IonTabButton tab="home" href="/home">
           <IonIcon icon={homeOutline} />
           <IonLabel>Inicio</IonLabel>
+        </IonTabButton>
+
+        <IonTabButton tab="cart" href="/cart">
+          <IonIcon icon={cartOutline} />
+          <IonLabel>Carrito</IonLabel>
+          {cartItemCount > 0 && (
+            <IonBadge color="danger" className="cart-badge">
+              {cartItemCount}
+            </IonBadge>
+          )}
         </IonTabButton>
 
         {permissions.isAdmin && (

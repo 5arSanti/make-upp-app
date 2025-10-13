@@ -15,12 +15,12 @@ import {
   IonIcon,
   IonSearchbar,
   IonSelect,
-  IonSelectOption, IonSpinner,
+  IonSelectOption,
+  IonSpinner,
   IonRefresher,
   IonRefresherContent,
   IonBadge,
   useIonToast,
-  useIonLoading
 } from "@ionic/react";
 import {
   searchOutline,
@@ -37,6 +37,8 @@ import { ProductController, CategoryController } from "../../services";
 import { Product } from "../../services/products/types";
 import { Category } from "../../services/categories/types";
 import { readCachedTRM, usdToCop, formatCOP } from "../../utils/trm";
+import { useUser } from "../../contexts/useUser";
+import { ProductDetailModal } from "../../components/ProductDetailModal";
 import "./Home.css";
 
 export function HomePage() {
@@ -49,11 +51,13 @@ export function HomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(12);
   const [trmValue, setTrmValue] = useState<number | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const { profile } = useUser();
   const productController = new ProductController();
   const categoryController = new CategoryController();
 
-  const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
 
   // Load data on component mount
@@ -162,26 +166,19 @@ export function HomePage() {
     });
   };
 
-  const addToCart = async (product: Product) => {
-    try {
-      await showLoading({ message: "Agregando al carrito..." });
+  const openProductModal = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
 
-      // TODO: Implement add to cart functionality
-      await showToast({
-        message: `${product.name} agregado al carrito`,
-        duration: 2000,
-        color: "success",
-      });
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      await showToast({
-        message: "Error al agregar al carrito",
-        duration: 3000,
-        color: "danger",
-      });
-    } finally {
-      await hideLoading();
-    }
+  const closeProductModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
+
+  const handleProductAddedToCart = () => {
+    // This will be called when a product is successfully added to cart from the modal
+    // We can add any additional logic here if needed
   };
 
   const getCategoryName = (categoryId?: number) => {
@@ -276,15 +273,16 @@ export function HomePage() {
         </IonRefresher>
 
         <div className="home-container">
-          {/* Hero Section */}
-          <div className="hero-section">
-            <div className="hero-content">
-              <h1 className="hero-title">Bienvenido a Make‑upp</h1>
-              <p className="hero-subtitle">
-                Tu experiencia de belleza luxury comienza aquí
-              </p>
-              <div className="hero-divider"></div>
-              <p className="hero-description">
+          {/* Personalized Welcome Section */}
+          <div className="welcome-section">
+            <div className="welcome-content">
+              <h1 className="welcome-title">
+                Bienvenido{" "}
+                {profile?.full_name || profile?.username || "Usuario"}
+              </h1>
+              <p className="welcome-subtitle">¿Qué deseas comprar hoy?</p>
+              <div className="welcome-divider"></div>
+              <p className="welcome-description">
                 Descubre productos premium cuidadosamente seleccionados para
                 realzar tu belleza natural.
               </p>
@@ -300,22 +298,29 @@ export function HomePage() {
               className="home-searchbar"
             />
 
-          <div className="category-filters">
-            <IonSelect
-              interface="popover"
-              value={selectedCategory}
-              onIonChange={(e) => setSelectedCategory(e.detail.value!.toString())}
-              placeholder="Selecciona una categoría"
-              className="category-select"
-            >
-              <IonSelectOption value="all">Todos ({products.length})</IonSelectOption>
-              {categoryStats.map((category) => (
-                <IonSelectOption key={category.id} value={category.id.toString()}>
-                  {category.name} ({category.productCount})
+            <div className="category-filters">
+              <IonSelect
+                interface="popover"
+                value={selectedCategory}
+                onIonChange={(e) =>
+                  setSelectedCategory(e.detail.value!.toString())
+                }
+                placeholder="Selecciona una categoría"
+                className="category-select"
+              >
+                <IonSelectOption value="all">
+                  Todos ({products.length})
                 </IonSelectOption>
-              ))}
-            </IonSelect>
-          </div>
+                {categoryStats.map((category) => (
+                  <IonSelectOption
+                    key={category.id}
+                    value={category.id.toString()}
+                  >
+                    {category.name} ({category.productCount})
+                  </IonSelectOption>
+                ))}
+              </IonSelect>
+            </div>
           </div>
 
           {/* Products Section */}
@@ -363,7 +368,10 @@ export function HomePage() {
                         sizeMd="4"
                         sizeLg="3"
                       >
-                        <IonCard className="product-card">
+                        <IonCard
+                          className="product-card"
+                          onClick={() => openProductModal(product)}
+                        >
                           <div className="product-image-container">
                             {product.image_url ? (
                               <img
@@ -381,7 +389,10 @@ export function HomePage() {
                               <IonButton
                                 fill="clear"
                                 className="favorite-button"
-                                onClick={() => toggleFavorite(product.id!)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleFavorite(product.id!);
+                                }}
                               >
                                 <IonIcon
                                   icon={
@@ -436,22 +447,40 @@ export function HomePage() {
                                   {product.price.toFixed(2)}
                                 </span>
                               </div>
-                              <div className="product-price" title="Precio en COP">
+                              <div
+                                className="product-price"
+                                title="Precio en COP"
+                              >
                                 <span className="price-currency">COP</span>
                                 <span className="price-amount">
-                                  {formatCOP(usdToCop(product.price, trmValue ? { unidad: "COP", valor: trmValue, vigenciadesde: "", vigenciahasta: "" } : null))}
+                                  {formatCOP(
+                                    usdToCop(
+                                      product.price,
+                                      trmValue
+                                        ? {
+                                            unidad: "COP",
+                                            valor: trmValue,
+                                            vigenciadesde: "",
+                                            vigenciahasta: "",
+                                          }
+                                        : null
+                                    )
+                                  )}
                                 </span>
                               </div>
 
                               <IonButton
                                 fill="solid"
                                 size="small"
-                                onClick={() => addToCart(product)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openProductModal(product);
+                                }}
                                 disabled={!product.available}
                                 className="add-to-cart-button"
                               >
                                 <IonIcon icon={cartOutline} slot="start" />
-                                {product.available ? "Agregar" : "Agotado"}
+                                {product.available ? "Ver Detalles" : "Agotado"}
                               </IonButton>
                             </div>
                           </IonCardContent>
@@ -465,6 +494,14 @@ export function HomePage() {
             )}
           </div>
         </div>
+
+        {/* Product Detail Modal */}
+        <ProductDetailModal
+          isOpen={isModalOpen}
+          onClose={closeProductModal}
+          product={selectedProduct}
+          onAddToCart={handleProductAddedToCart}
+        />
       </IonContent>
     </IonPage>
   );

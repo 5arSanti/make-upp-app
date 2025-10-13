@@ -1,4 +1,3 @@
-import { } from "react-router-dom";
 import { IonApp, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 
@@ -7,6 +6,7 @@ import "@ionic/react/css/ionic.bundle.css";
 /* Theme variables */
 import "./theme/variables.css";
 import { UserProvider, useUser } from "./contexts/useUser";
+import { CartProvider } from "./contexts/CartContext";
 import { useEffect } from "react";
 import { ensureTRMForToday } from "./utils/trm";
 import { AppRoutes } from "./routes/AppRoutes";
@@ -84,7 +84,9 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <UserProvider>
-      <AppContent />
+      <CartProvider>
+        <AppContent />
+      </CartProvider>
     </UserProvider>
   );
 };

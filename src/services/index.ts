@@ -24,6 +24,11 @@ export * from "./products/types";
 
 export { StorageService } from "./storage/StorageService";
 
+export { CartController } from "./cart/CartController";
+export { CartService } from "./cart/CartService";
+export { CartRepository } from "./cart/CartRepository";
+export * from "./cart/types";
+
 export * from "./base/interfaces";
 export { BaseRepositoryImpl } from "./base/BaseRepository";
 export { BaseServiceImpl } from "./base/BaseService";
