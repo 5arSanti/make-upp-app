@@ -1,9 +1,5 @@
 import { InvoiceService } from "./InvoiceService";
-import {
-  Invoice,
-  InvoiceWithOrder,
-  CreateInvoiceDto,
-} from "./types";
+import { Invoice, InvoiceWithOrder, CreateInvoiceDto } from "../orders/types";
 
 export class InvoiceController {
   private invoiceService: InvoiceService;
@@ -24,6 +20,10 @@ export class InvoiceController {
     return await this.invoiceService.getInvoiceByOrderId(orderId);
   }
 
+  async getInvoicesByProfileId(profileId: string): Promise<InvoiceWithOrder[]> {
+    return await this.invoiceService.getInvoicesByProfileId(profileId);
+  }
+
   async createInvoice(data: CreateInvoiceDto): Promise<Invoice> {
     return await this.invoiceService.createInvoice(data);
   }
@@ -36,7 +36,10 @@ export class InvoiceController {
     return await this.invoiceService.getInvoiceStatistics();
   }
 
-  async generateInvoiceForOrder(orderId: string, pdfUrl?: string): Promise<Invoice> {
+  async generateInvoiceForOrder(
+    orderId: string,
+    pdfUrl?: string
+  ): Promise<Invoice> {
     return await this.invoiceService.generateInvoiceForOrder(orderId, pdfUrl);
   }
 }

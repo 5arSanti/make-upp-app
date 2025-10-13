@@ -27,11 +27,11 @@ import {
   listOutline,
   receiptOutline,
   shieldOutline,
-  storefrontOutline,
   cartOutline,
   helpCircleOutline,
   informationCircleOutline,
   logOutOutline,
+  documentTextOutline,
 } from "ionicons/icons";
 
 import { AuthController, UserRole } from "../../services";
@@ -136,13 +136,17 @@ export function SettingsPage() {
                     </IonCardSubtitle>
                   </IonCardHeader>
                   <IonCardContent>
-                  <IonList className="settings-list">
-                    <IonItem button className="highlight-item" onClick={() => navigateTo("/account")}>
-                      <IonIcon icon={personOutline} slot="start" />
-                      <IonLabel>Mi Perfil</IonLabel>
-                      <IonNote slot="end">Editar información</IonNote>
-                    </IonItem>
-                  </IonList>
+                    <IonList className="settings-list">
+                      <IonItem
+                        button
+                        className="highlight-item"
+                        onClick={() => navigateTo("/account")}
+                      >
+                        <IonIcon icon={personOutline} slot="start" />
+                        <IonLabel>Mi Perfil</IonLabel>
+                        <IonNote slot="end">Editar información</IonNote>
+                      </IonItem>
+                    </IonList>
                   </IonCardContent>
                 </IonCard>
               </IonCol>
@@ -160,45 +164,25 @@ export function SettingsPage() {
                     </IonCardHeader>
                     <IonCardContent>
                       <IonList className="settings-list">
-                        <IonItem button>
+                        <IonItem button onClick={() => navigateTo("/cart")}>
                           <IonIcon icon={cartOutline} slot="start" />
                           <IonLabel>Mi Carrito</IonLabel>
-                          <IonNote slot="end">Próximamente</IonNote>
                         </IonItem>
 
-                        <IonItem button>
+                        <IonItem
+                          button
+                          onClick={() => navigateTo("/my-orders")}
+                        >
                           <IonIcon icon={receiptOutline} slot="start" />
                           <IonLabel>Mis Pedidos</IonLabel>
-                          <IonNote slot="end">Próximamente</IonNote>
-                        </IonItem>
-                      </IonList>
-                    </IonCardContent>
-                  </IonCard>
-                </IonCol>
-              )}
-
-              {/* Seller Settings */}
-              {permissions.canSellProducts && (
-                <IonCol size="12" sizeMd="6">
-                  <IonCard className="settings-card">
-                    <IonCardHeader>
-                      <IonCardTitle>
-                        <IonIcon icon={storefrontOutline} />
-                        Mi Tienda
-                      </IonCardTitle>
-                      <IonCardSubtitle>Gestiona tus productos</IonCardSubtitle>
-                    </IonCardHeader>
-                    <IonCardContent>
-                      <IonList className="settings-list">
-                        <IonItem button onClick={() => navigateTo("/create-product")}>
-                          <IonIcon icon={addOutline} slot="start" />
-                          <IonLabel>Agregar Producto</IonLabel>
                         </IonItem>
 
-                        <IonItem button>
-                          <IonIcon icon={listOutline} slot="start" />
-                          <IonLabel>Mis Productos</IonLabel>
-                          <IonNote slot="end">Próximamente</IonNote>
+                        <IonItem
+                          button
+                          onClick={() => navigateTo("/my-invoices")}
+                        >
+                          <IonIcon icon={documentTextOutline} slot="start" />
+                          <IonLabel>Mis Facturas</IonLabel>
                         </IonItem>
                       </IonList>
                     </IonCardContent>
@@ -219,20 +203,25 @@ export function SettingsPage() {
                     </IonCardHeader>
                     <IonCardContent>
                       <IonList className="settings-list">
-                        <IonItem button onClick={() => navigateTo("/create-product")}>
+                        <IonItem
+                          button
+                          onClick={() => navigateTo("/create-product")}
+                        >
                           <IonIcon icon={addOutline} slot="start" />
                           <IonLabel>Crear Producto</IonLabel>
                         </IonItem>
 
-                        <IonItem button>
+                        <IonItem
+                          button
+                          onClick={() => navigateTo("/product-management")}
+                        >
                           <IonIcon icon={listOutline} slot="start" />
                           <IonLabel>Gestionar Productos</IonLabel>
-                          <IonNote slot="end">Próximamente</IonNote>
                         </IonItem>
-                        <IonItem button>
+
+                        <IonItem button onClick={() => navigateTo("/admin")}>
                           <IonIcon icon={receiptOutline} slot="start" />
                           <IonLabel>Pedidos y Facturas</IonLabel>
-                          <IonNote slot="end">Próximamente</IonNote>
                         </IonItem>
                       </IonList>
                     </IonCardContent>
@@ -252,12 +241,26 @@ export function SettingsPage() {
                   </IonCardHeader>
                   <IonCardContent>
                     <IonList className="settings-list">
-                      <IonItem button onClick={() => alert("Centro de Ayuda: Próximamente.\nSoporte: soporte@make-upp.com") }>
+                      <IonItem
+                        button
+                        onClick={() =>
+                          alert(
+                            "Centro de Ayuda: Próximamente.\nSoporte: soporte@make-upp.com"
+                          )
+                        }
+                      >
                         <IonIcon icon={helpCircleOutline} slot="start" />
                         <IonLabel>Centro de Ayuda</IonLabel>
                       </IonItem>
 
-                      <IonItem button onClick={() => alert("Make‑upp v1.0.0\nAplicación de belleza luxury.") }>
+                      <IonItem
+                        button
+                        onClick={() =>
+                          alert(
+                            "Make‑upp v1.0.0\nAplicación de belleza luxury."
+                          )
+                        }
+                      >
                         <IonIcon icon={informationCircleOutline} slot="start" />
                         <IonLabel>Acerca de Make‑upp</IonLabel>
                       </IonItem>

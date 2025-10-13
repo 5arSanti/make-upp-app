@@ -21,6 +21,9 @@ import { AdminPage } from "../../pages/Admin";
 import { CreateProductPage } from "../../pages/CreateProduct";
 import { CartPage } from "../../pages/Cart";
 import { PayPalDemoPage } from "../../pages/PayPalDemo";
+import { ProductManagementPage } from "../../pages/ProductManagement";
+import { MyOrdersPage } from "../../pages/MyOrders";
+import { MyInvoicesPage } from "../../pages/MyInvoices";
 import { useUserPermissions } from "../../contexts/useUser";
 import { useCart } from "../../contexts/CartContext";
 import "./Navigation.css";
@@ -52,6 +55,15 @@ export function GlobalNavigation() {
         </Route>
         <Route exact path="/paypal-demo">
           <PayPalDemoPage />
+        </Route>
+        <Route exact path="/product-management">
+          <ProductManagementPage />
+        </Route>
+        <Route exact path="/my-orders">
+          <MyOrdersPage />
+        </Route>
+        <Route exact path="/my-invoices">
+          <MyInvoicesPage />
         </Route>
         <Route exact path="/">
           <Redirect to="/home" />

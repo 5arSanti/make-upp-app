@@ -174,6 +174,64 @@ export class InvoiceRepository extends BaseRepositoryImpl<Invoice> {
     return data;
   }
 
+  async findByProfileId(profileId: string): Promise<InvoiceWithOrder[]> {
+    const { data, error } = await supabase
+      .from("invoices")
+      .select(
+        `
+        *,
+        orders!invoices_order_id_fkey (
+          id,
+          profile_id,
+          total,
+          status,
+          created_at,
+          profiles!orders_profile_id_fkey (
+            id,
+            username,
+            full_name
+          ),
+          order_items (
+            id,
+            order_id,
+            product_id,
+            quantity,
+            price_at_purchase,
+            products!order_items_product_id_fkey (
+              id,
+              name,
+              image_url
+            )
+          )
+        )
+      `
+      )
+      .eq("orders.profile_id", profileId)
+      .order("issued_at", { ascending: false });
+
+    if (error) {
+      throw new Error(`Error fetching invoices by profile: ${error.message}`);
+    }
+
+    return (data as InvoiceQueryResult[]).map((invoice) => ({
+      ...invoice,
+      order: {
+        ...invoice.orders,
+        items: invoice.orders.order_items.map(
+          (item): OrderItemWithProduct => ({
+            id: item.id,
+            order_id: item.order_id,
+            product_id: item.product_id,
+            quantity: item.quantity,
+            price_at_purchase: item.price_at_purchase,
+            product: item.products!,
+          })
+        ),
+        profile: invoice.orders.profiles || undefined,
+      } as OrderWithItems,
+    }));
+  }
+
   async create(data: CreateInvoiceDto): Promise<Invoice> {
     const { data: invoice, error } = await supabase
       .from("invoices")

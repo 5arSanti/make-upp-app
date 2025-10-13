@@ -21,6 +21,10 @@ export class InvoiceService {
     return await this.invoiceRepository.findByOrderId(orderId);
   }
 
+  async getInvoicesByProfileId(profileId: string): Promise<InvoiceWithOrder[]> {
+    return await this.invoiceRepository.findByProfileId(profileId);
+  }
+
   async createInvoice(data: CreateInvoiceDto): Promise<Invoice> {
     return await this.invoiceRepository.create(data);
   }

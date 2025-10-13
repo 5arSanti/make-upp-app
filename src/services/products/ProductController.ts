@@ -16,6 +16,10 @@ export class ProductController {
     return await this.productService.findAll();
   }
 
+  async getAllProducts(): Promise<Product[]> {
+    return await this.productService.findAll();
+  }
+
   async create(data: CreateProductDto): Promise<Product> {
     return await this.productService.create(data);
   }
@@ -32,7 +36,10 @@ export class ProductController {
     productData: CreateProductDto,
     imageFile?: File
   ): Promise<Product> {
-    return await this.productService.createProductWithImage(productData, imageFile);
+    return await this.productService.createProductWithImage(
+      productData,
+      imageFile
+    );
   }
 
   async updateProductWithImage(
@@ -40,7 +47,11 @@ export class ProductController {
     productData: UpdateProductDto,
     imageFile?: File
   ): Promise<Product> {
-    return await this.productService.updateProductWithImage(id, productData, imageFile);
+    return await this.productService.updateProductWithImage(
+      id,
+      productData,
+      imageFile
+    );
   }
 
   async getProductsByCategory(categoryId: number): Promise<Product[]> {
