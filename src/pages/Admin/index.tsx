@@ -614,9 +614,6 @@ export function AdminPage() {
                         </div>
 
                         <div className="item-actions">
-                          <IonButton size="small" fill="outline">
-                            Ver PDF
-                          </IonButton>
                           <IonButton size="small" color="primary">
                             Reenviar
                           </IonButton>

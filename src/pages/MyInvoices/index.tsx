@@ -25,7 +25,6 @@ import {
   checkmarkCircleOutline,
   timeOutline,
   alertCircleOutline,
-  downloadOutline,
   documentTextOutline,
 } from "ionicons/icons";
 
@@ -421,17 +420,7 @@ export function MyInvoicesPage() {
                       </div>
 
                       <div className="invoice-actions">
-                        <IonButton
-                          size="small"
-                          color="primary"
-                          fill="outline"
-                          onClick={() =>
-                            navigateTo(`/invoice-pdf/${invoice.id}`)
-                          }
-                        >
-                          <IonIcon icon={downloadOutline} slot="start" />
-                          Descargar PDF
-                        </IonButton>
+                        {/* PDF download functionality removed */}
                       </div>
                     </IonCardContent>
                   </IonCard>

@@ -272,7 +272,7 @@ export function SettingsPage() {
               {/* Sign Out */}
               <IonCol size="12">
                 <IonCard className="settings-card signout-card">
-                  <IonCardContent>
+                  {/* <IonCardContent> */}
                     <IonButton
                       expand="block"
                       className="signout-button"
@@ -281,7 +281,7 @@ export function SettingsPage() {
                       <IonIcon icon={logOutOutline} slot="start" />
                       <span>Cerrar Sesión</span>
                     </IonButton>
-                  </IonCardContent>
+                  {/* </IonCardContent> */}
                 </IonCard>
               </IonCol>
             </IonRow>

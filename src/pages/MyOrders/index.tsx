@@ -25,7 +25,6 @@ import {
   checkmarkCircleOutline,
   timeOutline,
   alertCircleOutline,
-  downloadOutline,
 } from "ionicons/icons";
 
 import { OrderController, OrderWithItems, OrderStatus } from "../../services";
@@ -423,17 +422,7 @@ export function MyOrdersPage() {
                       </div>
 
                       <div className="order-actions">
-                        {order.status === OrderStatus.COMPLETED && (
-                          <IonButton
-                            size="small"
-                            color="primary"
-                            fill="outline"
-                            onClick={() => navigateTo(`/invoice/${order.id}`)}
-                          >
-                            <IonIcon icon={downloadOutline} slot="start" />
-                            Ver Factura
-                          </IonButton>
-                        )}
+                        {/* PDF invoice functionality removed */}
                       </div>
                     </IonCardContent>
                   </IonCard>
