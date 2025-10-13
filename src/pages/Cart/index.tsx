@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   IonContent,
   IonPage,
@@ -41,6 +41,7 @@ export function CartPage() {
   const [trmValue, setTrmValue] = useState<number | null>(null);
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
   const [isPayPalOpen, setIsPayPalOpen] = useState(false);
+  const paypalReturnProcessed = useRef(false);
 
   const { profile } = useUser();
   const {
@@ -54,70 +55,73 @@ export function CartPage() {
   const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
 
-  const handlePayPalReturn = useCallback(
-    async (params: { payment: string; order: string }) => {
-      try {
-        if (params.payment === "success") {
-          // Simulate successful payment and create order
-          await showLoading({ message: "Procesando pago exitoso..." });
-
-          if (cart && profile) {
-            const checkoutService = new CheckoutService();
-            const { orderId } = await checkoutService.processCheckout(
-              cart,
-              profile.id
-            );
-
-            // Clear the cart after successful payment
-            await clearCart();
-
-            await showToast({
-              message: `¡Pago procesado exitosamente! Orden #${orderId.slice(
-                -8
-              )}`,
-              duration: 4000,
-              color: "success",
-            });
-
-            // Refresh cart to show empty state
-            await refreshCart();
-          }
-        } else if (params.payment === "cancelled") {
-          await showToast({
-            message: "Pago cancelado por el usuario",
-            duration: 3000,
-            color: "warning",
-          });
-        }
-
-        // Clean up URL parameters
-        PayPalService.cleanupPayPalReturn();
-      } catch (error) {
-        console.error("Error handling PayPal return:", error);
-        await showToast({
-          message: "Error al procesar el retorno de PayPal",
-          duration: 3000,
-          color: "danger",
-        });
-      } finally {
-        await hideLoading();
-      }
-    },
-    [cart, profile, clearCart, refreshCart, showLoading, hideLoading, showToast]
-  );
 
   useEffect(() => {
     const cached = readCachedTRM();
     setTrmValue(cached?.valor ?? null);
+  }, []);
 
-    // Check for PayPal return parameters
-    if (PayPalService.isPayPalReturn()) {
+  // Separate effect for PayPal return handling to avoid dependency issues
+  useEffect(() => {
+    if (!paypalReturnProcessed.current && PayPalService.isPayPalReturn()) {
+      console.log("Processing PayPal return...");
+      paypalReturnProcessed.current = true;
       const params = PayPalService.getPayPalReturnParams();
       if (params) {
-        handlePayPalReturn(params);
+        console.log("PayPal return params:", params);
+        // Process PayPal return inline to avoid dependency issues
+        const processPayPalReturn = async () => {
+          try {
+            if (params.payment === "success") {
+              console.log("Processing successful payment...");
+              await showLoading({ message: "Procesando pago exitoso..." });
+              
+              if (cart && profile) {
+                console.log("Creating order for cart:", cart.id);
+                const checkoutService = new CheckoutService();
+                const { orderId } = await checkoutService.processCheckout(
+                  cart,
+                  profile.id
+                );
+
+                console.log("Order created:", orderId);
+                await clearCart();
+
+                await showToast({
+                  message: `¡Pago procesado exitosamente! Orden #${orderId.slice(-8)}`,
+                  duration: 4000,
+                  color: "success",
+                });
+
+                await refreshCart();
+              }
+            } else if (params.payment === "cancelled") {
+              console.log("Payment cancelled by user");
+              await showToast({
+                message: "Pago cancelado por el usuario",
+                duration: 3000,
+                color: "warning",
+              });
+            }
+
+            PayPalService.cleanupPayPalReturn();
+          } catch (error) {
+            console.error("Error handling PayPal return:", error);
+            await showToast({
+              message: "Error al procesar el retorno de PayPal",
+              duration: 3000,
+              color: "danger",
+            });
+          } finally {
+            console.log("Hiding loading...");
+            await hideLoading();
+          }
+        };
+
+        processPayPalReturn();
       }
     }
-  }, [handlePayPalReturn]);
+  }, [cart, profile, clearCart, refreshCart, showLoading, hideLoading, showToast]);
 
   const handleRefresh = async (event: CustomEvent) => {
     try {
