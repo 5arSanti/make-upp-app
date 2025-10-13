@@ -29,6 +29,15 @@ export { CartService } from "./cart/CartService";
 export { CartRepository } from "./cart/CartRepository";
 export * from "./cart/types";
 
+export { OrderController } from "./orders/OrderController";
+export { OrderService } from "./orders/OrderService";
+export { OrderRepository } from "./orders/OrderRepository";
+export * from "./orders/types";
+
+export { InvoiceController } from "./invoices/InvoiceController";
+export { InvoiceService } from "./invoices/InvoiceService";
+export { InvoiceRepository } from "./invoices/InvoiceRepository";
+
 export * from "./base/interfaces";
 export { BaseRepositoryImpl } from "./base/BaseRepository";
 export { BaseServiceImpl } from "./base/BaseService";
