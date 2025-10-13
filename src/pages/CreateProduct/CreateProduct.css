@@ -7,7 +7,11 @@
 .create-product-page .decoration {
   position: fixed;
   border-radius: 50%;
-  background: linear-gradient(45deg, rgba(255, 182, 193, 0.1), rgba(221, 160, 221, 0.1));
+  background: linear-gradient(
+    45deg,
+    rgba(255, 182, 193, 0.1),
+    rgba(221, 160, 221, 0.1)
+  );
   z-index: 0;
 }
 
@@ -36,8 +40,13 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(180deg); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
 }
 
 .create-product-container {
@@ -71,7 +80,11 @@
   font-weight: 700;
   color: var(--ion-color-dark);
   margin: 0 0 10px 0;
-  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--ion-color-primary),
+    var(--ion-color-secondary)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -262,6 +275,11 @@
   gap: 20px;
   padding: 20px 0;
   flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  margin: 20px 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .action-buttons ion-button {
@@ -272,17 +290,51 @@
   --padding-bottom: 12px;
   font-weight: 600;
   min-width: 140px;
+  height: 48px;
 }
 
-.action-buttons ion-button[fill="outline"] {
+.action-buttons .cancel-button {
   --border-width: 2px;
   --border-color: var(--ion-color-medium);
   --color: var(--ion-color-medium);
 }
 
-.action-buttons ion-button[fill="solid"] {
-  --background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+.action-buttons .submit-button {
+  --background: linear-gradient(
+    135deg,
+    var(--ion-color-primary),
+    var(--ion-color-secondary)
+  );
   --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --color: white;
+}
+
+.action-buttons .submit-button:disabled {
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-medium);
+  --box-shadow: none;
+  opacity: 0.6;
+}
+
+/* Validation Messages */
+.validation-messages {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.validation-messages p {
+  margin: 4px 0;
+  color: var(--ion-color-warning);
+  font-size: 0.9rem;
+}
+
+.validation-messages p:first-child {
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
 /* Access Denied */

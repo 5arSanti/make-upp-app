@@ -32,7 +32,11 @@ import {
   checkmarkCircleOutline,
 } from "ionicons/icons";
 
-import { ProductController, CategoryController, CreateProductDto } from "../../services";
+import {
+  ProductController,
+  CategoryController,
+  CreateProductDto,
+} from "../../services";
 import { useUserPermissions } from "../../contexts/useUser";
 import "./CreateProduct.css";
 
@@ -80,7 +84,7 @@ export function CreateProductPage() {
   // Load categories on component mount
   useEffect(() => {
     loadCategories();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadCategories = async () => {
     try {
@@ -96,8 +100,11 @@ export function CreateProductPage() {
     }
   };
 
-  const handleInputChange = (field: keyof CreateProductDto, value: any) => {
-    setFormData(prev => ({
+  const handleInputChange = (
+    field: keyof CreateProductDto,
+    value: string | number | boolean
+  ) => {
+    setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
@@ -107,7 +114,7 @@ export function CreateProductPage() {
     const file = event.target.files?.[0];
     if (file) {
       // Validate file type
-      if (!file.type.startsWith('image/')) {
+      if (!file.type.startsWith("image/")) {
         showToast({
           message: "Por favor selecciona un archivo de imagen válido",
           duration: 3000,
@@ -162,7 +169,7 @@ export function CreateProductPage() {
       await showLoading({ message: "Creando producto..." });
 
       // Create product with image
-      const newProduct = await productController.createProductWithImage(
+      await productController.createProductWithImage(
         formData,
         selectedImage || undefined
       );
@@ -188,7 +195,6 @@ export function CreateProductPage() {
 
       // Navigate back or to products list
       router.back();
-
     } catch (error) {
       await hideLoading();
       console.error("Error creating product:", error);
@@ -259,10 +265,14 @@ export function CreateProductPage() {
                     <div className="form-content">
                       {/* Product Name */}
                       <IonItem className="form-item">
-                        <IonLabel position="stacked">Nombre del Producto *</IonLabel>
+                        <IonLabel position="stacked">
+                          Nombre del Producto *
+                        </IonLabel>
                         <IonInput
                           value={formData.name}
-                          onIonInput={(e) => handleInputChange("name", e.detail.value!)}
+                          onIonInput={(e) =>
+                            handleInputChange("name", e.detail.value!)
+                          }
                           placeholder="Ej: Base de Maquillaje Luxury"
                           required
                         />
@@ -273,7 +283,9 @@ export function CreateProductPage() {
                         <IonLabel position="stacked">Descripción</IonLabel>
                         <IonTextarea
                           value={formData.description}
-                          onIonInput={(e) => handleInputChange("description", e.detail.value!)}
+                          onIonInput={(e) =>
+                            handleInputChange("description", e.detail.value!)
+                          }
                           placeholder="Describe las características del producto..."
                           rows={3}
                         />
@@ -285,7 +297,12 @@ export function CreateProductPage() {
                         <IonInput
                           type="number"
                           value={formData.price}
-                          onIonInput={(e) => handleInputChange("price", parseFloat(e.detail.value!) || 0)}
+                          onIonInput={(e) =>
+                            handleInputChange(
+                              "price",
+                              parseFloat(e.detail.value!) || 0
+                            )
+                          }
                           placeholder="0.00"
                           min="0"
                           step="0.01"
@@ -298,11 +315,16 @@ export function CreateProductPage() {
                         <IonLabel position="stacked">Categoría</IonLabel>
                         <IonSelect
                           value={formData.category_id}
-                          onSelectionChange={(e) => handleInputChange("category_id", e.detail.value)}
+                          onIonChange={(e) =>
+                            handleInputChange("category_id", e.detail.value)
+                          }
                           placeholder="Selecciona una categoría"
                         >
                           {categories.map((category) => (
-                            <IonSelectOption key={category.id} value={category.id}>
+                            <IonSelectOption
+                              key={category.id}
+                              value={category.id}
+                            >
                               {category.name}
                             </IonSelectOption>
                           ))}
@@ -314,7 +336,9 @@ export function CreateProductPage() {
                         <IonLabel>Disponible para venta</IonLabel>
                         <IonToggle
                           checked={formData.available}
-                          onIonChange={(e) => handleInputChange("available", e.detail.checked)}
+                          onIonChange={(e) =>
+                            handleInputChange("available", e.detail.checked)
+                          }
                           slot="end"
                         />
                       </IonItem>
@@ -367,10 +391,14 @@ export function CreateProductPage() {
                         />
                         <IonButton
                           fill="outline"
-                          onClick={() => document.getElementById("image-upload")?.click()}
+                          onClick={() =>
+                            document.getElementById("image-upload")?.click()
+                          }
                         >
                           <IonIcon icon={imageOutline} slot="start" />
-                          {selectedImage ? "Cambiar Imagen" : "Seleccionar Imagen"}
+                          {selectedImage
+                            ? "Cambiar Imagen"
+                            : "Seleccionar Imagen"}
                         </IonButton>
                       </div>
 
@@ -390,13 +418,18 @@ export function CreateProductPage() {
               fill="outline"
               onClick={handleGoBack}
               disabled={isSubmitting}
+              className="cancel-button"
             >
               <IonIcon icon={arrowBackOutline} slot="start" />
               Cancelar
             </IonButton>
             <IonButton
               onClick={handleSubmit}
-              disabled={isSubmitting || !formData.name.trim() || formData.price <= 0}
+              disabled={
+                isSubmitting || !formData.name.trim() || formData.price <= 0
+              }
+              color="primary"
+              className="submit-button"
             >
               {isSubmitting ? (
                 <IonSpinner name="crescent" />
@@ -406,6 +439,20 @@ export function CreateProductPage() {
               {isSubmitting ? "Creando..." : "Crear Producto"}
             </IonButton>
           </div>
+
+          {/* Validation Messages */}
+          {(!formData.name.trim() || formData.price <= 0) && (
+            <div className="validation-messages">
+              <p>
+                ⚠️ Completa los campos requeridos para habilitar el botón de
+                guardar:
+              </p>
+              {!formData.name.trim() && (
+                <p>• Nombre del producto es requerido</p>
+              )}
+              {formData.price <= 0 && <p>• Precio debe ser mayor a 0</p>}
+            </div>
+          )}
         </div>
       </IonContent>
     </IonPage>
