@@ -5,6 +5,7 @@ import { HomePage } from "../../pages/Home";
 import { AccountPage } from "../../pages/Account";
 import { SettingsPage } from "../../pages/Settings";
 import { AdminPage } from "../../pages/Admin";
+import { CreateProductPage } from "../../pages/CreateProduct";
 import { useUserPermissions } from "../../contexts/useUser";
 import "./Navigation.css";
 
@@ -25,6 +26,9 @@ export function GlobalNavigation() {
         </Route>
         <Route exact path="/admin">
           <AdminPage />
+        </Route>
+        <Route exact path="/create-product">
+          <CreateProductPage />
         </Route>
         <Route exact path="/">
           <Redirect to="/home" />

@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   IonButton,
   IonContent,
@@ -199,10 +198,9 @@ export function SettingsPage() {
                     </IonCardHeader>
                     <IonCardContent>
                       <IonList className="settings-list">
-                        <IonItem button>
+                        <IonItem button onClick={() => navigateTo("/create-product")}>
                           <IonIcon icon={addOutline} slot="start" />
                           <IonLabel>Agregar Producto</IonLabel>
-                          <IonNote slot="end">Próximamente</IonNote>
                         </IonItem>
 
                         <IonItem button>
@@ -229,10 +227,9 @@ export function SettingsPage() {
                     </IonCardHeader>
                     <IonCardContent>
                       <IonList className="settings-list">
-                        <IonItem button>
+                        <IonItem button onClick={() => navigateTo("/create-product")}>
                           <IonIcon icon={addOutline} slot="start" />
                           <IonLabel>Crear Producto</IonLabel>
-                          <IonNote slot="end">Próximamente</IonNote>
                         </IonItem>
 
                         <IonItem button>

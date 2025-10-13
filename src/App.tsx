@@ -125,6 +125,14 @@ const AppContent: React.FC = () => {
               <Redirect to="/" />
             )}
           </Route>
+
+          <Route exact path="/create-product">
+            {user && hasProfile === true ? (
+              <GlobalNavigation />
+            ) : (
+              <Redirect to="/" />
+            )}
+          </Route>
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

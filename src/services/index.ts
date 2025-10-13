@@ -5,7 +5,6 @@ export * from "./enums";
 export { ProfileController } from "./profile/ProfileController";
 export { ProfileService } from "./profile/ProfileService";
 export { ProfileRepository } from "./profile/ProfileRepository";
-export * from "./profile/types";
 
 export { AuthController } from "./auth/AuthController";
 export { AuthService } from "./auth/AuthService";
@@ -17,7 +16,13 @@ export { RoleRepository } from "./roles/RoleRepository";
 export { CategoryController } from "./categories/CategoryController";
 export { CategoryService } from "./categories/CategoryService";
 export { CategoryRepository } from "./categories/CategoryRepository";
-export * from "./categories/types";
+
+export { ProductController } from "./products/ProductController";
+export { ProductService } from "./products/ProductService";
+export { ProductRepository } from "./products/ProductRepository";
+export * from "./products/types";
+
+export { StorageService } from "./storage/StorageService";
 
 export * from "./base/interfaces";
 export { BaseRepositoryImpl } from "./base/BaseRepository";

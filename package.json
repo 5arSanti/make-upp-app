@@ -11,7 +11,8 @@
     "test.unit": "vitest",
     "lint": "eslint",
     "seed": "tsx --env-file=.env scripts/seed.ts",
-    "seed:admin": "tsx --env-file=.env scripts/seed.ts"
+    "seed:admin": "tsx --env-file=.env scripts/seed.ts",
+    "setup:storage": "tsx --env-file=.env scripts/setup-storage.ts"
   },
   "dependencies": {
     "@capacitor/app": "7.1.0",
