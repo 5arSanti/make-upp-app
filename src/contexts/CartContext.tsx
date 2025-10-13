@@ -123,8 +123,13 @@ export function CartProvider({ children }: CartProviderProps) {
   };
 
   useEffect(() => {
-    loadCart();
-  }, [profile]);
+    // Only load cart if profile exists and we don't have cart data yet
+    if (profile && !cart) {
+      loadCart();
+    } else if (!profile) {
+      setCart(null);
+    }
+  }, [profile, cart]);
 
   const value: CartContextType = {
     cart,

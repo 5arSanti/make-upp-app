@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   IonContent,
   IonPage,
@@ -39,14 +39,25 @@ import { Category } from "../../services/categories/types";
 import { readCachedTRM, usdToCop, formatCOP } from "../../utils/trm";
 import { useUser } from "../../contexts/useUser";
 import { ProductDetailModal } from "../../components/ProductDetailModal";
+import {
+  getCachedProducts,
+  getCachedCategories,
+  isProductCacheValid,
+  setCachedProducts,
+  setCachedCategories,
+} from "../../utils/productCache";
 import "./Home.css";
 
 export function HomePage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>(
+    getCachedProducts() || []
+  );
+  const [categories, setCategories] = useState<Category[]>(
+    getCachedCategories() || []
+  );
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(12);
@@ -55,44 +66,64 @@ export function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { profile } = useUser();
-  const productController = new ProductController();
-  const categoryController = new CategoryController();
-
   const [showToast] = useIonToast();
 
-  // Load data on component mount
+  // Check if cache is still valid
+  const isCacheValid = useCallback(() => {
+    return isProductCacheValid();
+  }, []);
+
+  // Load data only if cache is invalid or empty
+  const loadData = useCallback(
+    async (forceRefresh = false) => {
+      if (!forceRefresh && isCacheValid()) {
+        setProducts(getCachedProducts()!);
+        setCategories(getCachedCategories()!);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const productController = new ProductController();
+        const categoryController = new CategoryController();
+
+        const [productsData, categoriesData] = await Promise.all([
+          productController.getAvailableProducts(),
+          categoryController.getAllCategories(),
+        ]);
+
+        // Update cache
+        setCachedProducts(productsData);
+        setCachedCategories(categoriesData);
+
+        setProducts(productsData);
+        setCategories(categoriesData);
+
+        const cached = readCachedTRM();
+        setTrmValue(cached?.valor ?? null);
+      } catch (error) {
+        console.error("Error loading data:", error);
+        await showToast({
+          message: "Error al cargar los productos",
+          duration: 3000,
+          color: "danger",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [isCacheValid, showToast]
+  );
+
+  // Load data on component mount only if cache is invalid
   useEffect(() => {
     loadData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loadData]);
 
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategory, searchTerm]);
-
-  const loadData = async () => {
-    try {
-      setIsLoading(true);
-      const [productsData, categoriesData] = await Promise.all([
-        productController.getAvailableProducts(),
-        categoryController.getAllCategories(),
-      ]);
-
-      setProducts(productsData);
-      setCategories(categoriesData);
-      const cached = readCachedTRM();
-      setTrmValue(cached?.valor ?? null);
-    } catch (error) {
-      console.error("Error loading data:", error);
-      await showToast({
-        message: "Error al cargar los productos",
-        duration: 3000,
-        color: "danger",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   // Memoized filtered products
   const filteredProducts = useMemo(() => {
@@ -136,7 +167,7 @@ export function HomePage() {
 
   const handleRefresh = async (event: CustomEvent) => {
     try {
-      await loadData();
+      await loadData(true); // Force refresh
       await showToast({
         message: "Productos actualizados",
         duration: 1500,
