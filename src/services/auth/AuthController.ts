@@ -1,5 +1,11 @@
 import { AuthService } from "./AuthService";
-import { AuthUser, SignInWithOtpDto, AuthSession } from "./types";
+import {
+  AuthUser,
+  SignInWithOtpDto,
+  SignInWithPasswordDto,
+  SignUpDto,
+  AuthSession,
+} from "./types";
 
 export class AuthController {
   private authService: AuthService;
@@ -35,6 +41,24 @@ export class AuthController {
     }
   }
 
+  async signInWithPassword(data: SignInWithPasswordDto): Promise<AuthSession> {
+    try {
+      return await this.authService.signInWithPassword(data);
+    } catch (error) {
+      console.error("Controller error signing in with password:", error);
+      throw error;
+    }
+  }
+
+  async signUp(data: SignUpDto): Promise<AuthSession> {
+    try {
+      return await this.authService.signUp(data);
+    } catch (error) {
+      console.error("Controller error signing up:", error);
+      throw error;
+    }
+  }
+
   async signOut(): Promise<void> {
     try {
       return await this.authService.signOut();
@@ -44,7 +68,9 @@ export class AuthController {
     }
   }
 
-  onAuthStateChange(callback: (event: string, session: AuthSession | null) => void) {
+  onAuthStateChange(
+    callback: (event: string, session: AuthSession | null) => void
+  ) {
     return this.authService.onAuthStateChange(callback);
   }
 }

@@ -13,3 +13,16 @@ export type AuthUser = User;
 export interface SignInWithOtpDto {
   email: string;
 }
+
+// DTO for email/password sign-in
+export interface SignInWithPasswordDto {
+  email: string;
+  password: string;
+}
+
+// DTO for user registration
+export interface SignUpDto {
+  email: string;
+  password: string;
+  full_name?: string;
+}

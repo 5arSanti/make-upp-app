@@ -7,10 +7,12 @@ import {
   IonPage,
   useIonToast,
   useIonLoading,
+  useIonRouter,
 } from "@ionic/react";
 import {
   sparklesOutline,
   mailOutline,
+  lockClosedOutline,
   arrowForwardOutline,
 } from "ionicons/icons";
 
@@ -33,17 +35,22 @@ function getErrorMessage(error: unknown): string {
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const authController = new AuthController();
+  const router = useIonRouter();
 
   const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Basic email validations
-    const trimmed = email.trim();
+
+    // Basic validations
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!trimmed) {
+
+    if (!trimmedEmail) {
       await showToast({
         message: "Ingresa tu correo electrónico",
         duration: 3000,
@@ -51,7 +58,8 @@ export function LoginPage() {
       });
       return;
     }
-    if (!emailRegex.test(trimmed)) {
+
+    if (!emailRegex.test(trimmedEmail)) {
       await showToast({
         message: "Correo electrónico inválido",
         duration: 3000,
@@ -59,14 +67,40 @@ export function LoginPage() {
       });
       return;
     }
+
+    if (!trimmedPassword) {
+      await showToast({
+        message: "Ingresa tu contraseña",
+        duration: 3000,
+        color: "warning",
+      });
+      return;
+    }
+
+    if (trimmedPassword.length < 6) {
+      await showToast({
+        message: "La contraseña debe tener al menos 6 caracteres",
+        duration: 3000,
+        color: "warning",
+      });
+      return;
+    }
+
     await showLoading();
     try {
-      await authController.signInWithOtp({ email: trimmed });
+      await authController.signInWithPassword({
+        email: trimmedEmail,
+        password: trimmedPassword,
+      });
+
       await showToast({
-        message: "✨ Revisa tu email para el enlace de acceso",
+        message: "✨ ¡Bienvenido de vuelta!",
         duration: 3000,
         color: "success",
       });
+
+      // Redirect to home after successful login
+      router.push("/home");
     } catch (error: unknown) {
       const message = getErrorMessage(error);
       // Handle specific Supabase error codes
@@ -76,18 +110,22 @@ export function LoginPage() {
         error?: { code?: string; message?: string };
       };
       const code = errObj.code ?? errObj.error?.code;
-      if (code === "validation_failed") {
+
+      if (code === "invalid_credentials") {
         await showToast({
-          message: "Debes ingresar un correo válido",
+          message: "Correo o contraseña incorrectos",
           duration: 4000,
           color: "danger",
         });
-      } else if (code === "over_email_send_rate_limit") {
-        const rawMsg = errObj.message ?? errObj.error?.message ?? "";
-        const secs = rawMsg.match(/(\d+) seconds/);
-        const wait = secs?.[1] ? `${secs[1]} segundos` : "unos segundos";
+      } else if (code === "email_not_confirmed") {
         await showToast({
-          message: `Espera ${wait} para solicitar un nuevo enlace`,
+          message: "Confirma tu correo electrónico antes de iniciar sesión",
+          duration: 5000,
+          color: "warning",
+        });
+      } else if (code === "too_many_requests") {
+        await showToast({
+          message: "Demasiados intentos. Intenta más tarde",
           duration: 5000,
           color: "warning",
         });
@@ -130,7 +168,7 @@ export function LoginPage() {
               <div className="form-header">
                 <h2 className="form-title">Bienvenido</h2>
                 <p className="form-subtitle">
-                  Ingresa tu correo para acceder a tu cuenta
+                  Ingresa tus credenciales para acceder a tu cuenta
                 </p>
               </div>
 
@@ -146,6 +184,23 @@ export function LoginPage() {
                       type="email"
                       placeholder="tu@email.com"
                       className="custom-input"
+                      enterkeyhint="next"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="input-wrapper">
+                  <label className="input-label">Contraseña</label>
+                  <div className="input-container">
+                    <IonIcon icon={lockClosedOutline} className="input-icon" />
+                    <IonInput
+                      value={password}
+                      name="password"
+                      onIonChange={(e) => setPassword(e.detail.value ?? "")}
+                      type="password"
+                      placeholder="Tu contraseña"
+                      className="custom-input"
                       enterkeyhint="send"
                       required
                     />
@@ -157,13 +212,15 @@ export function LoginPage() {
                   expand="block"
                   className="submit-button"
                 >
-                  <span>Continuar</span>
+                  <span>Iniciar Sesión</span>
                   <IonIcon icon={arrowForwardOutline} slot="end" />
                 </IonButton>
 
                 <p className="form-note">
-                  Te enviaremos un enlace mágico para iniciar sesión sin
-                  contraseña
+                  ¿Olvidaste tu contraseña?{" "}
+                  <a href="#" className="form-link">
+                    Recupérala aquí
+                  </a>
                 </p>
               </form>
 

@@ -17,6 +17,7 @@ import {
   sparklesOutline,
   mailOutline,
   personOutline,
+  lockClosedOutline,
   checkmarkCircleOutline,
 } from "ionicons/icons";
 
@@ -39,6 +40,8 @@ function getErrorMessage(error: unknown): string {
 
 export function RegisterPage() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.CUSTOMER);
@@ -56,7 +59,69 @@ export function RegisterPage() {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    // Validación básica
+    // Validaciones básicas
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email.trim()) {
+      await showToast({
+        message: "Ingresa tu correo electrónico",
+        duration: 3000,
+        color: "warning",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!emailRegex.test(email.trim())) {
+      await showToast({
+        message: "Correo electrónico inválido",
+        duration: 3000,
+        color: "warning",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!password.trim()) {
+      await showToast({
+        message: "Ingresa una contraseña",
+        duration: 3000,
+        color: "warning",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      await showToast({
+        message: "La contraseña debe tener al menos 6 caracteres",
+        duration: 3000,
+        color: "warning",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      await showToast({
+        message: "Las contraseñas no coinciden",
+        duration: 3000,
+        color: "warning",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!fullName.trim()) {
+      await showToast({
+        message: "Ingresa tu nombre completo",
+        duration: 3000,
+        color: "warning",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     if (username.length < 3) {
       await showToast({
         message: "El nombre de usuario debe tener al menos 3 caracteres",
@@ -69,7 +134,7 @@ export function RegisterPage() {
 
     try {
       await showLoading({
-        message: "Registrando usuario...",
+        message: "Creando tu cuenta...",
         spinner: "crescent",
       });
     } catch (error) {
@@ -77,22 +142,47 @@ export function RegisterPage() {
     }
 
     try {
-      // Enviar OTP para registro
-      await authController.signInWithOtp({ email });
+      // Registrar usuario con contraseña
+      await authController.signUp({
+        email: email.trim(),
+        password: password.trim(),
+        full_name: fullName.trim(),
+      });
 
       await showToast({
-        message: "✨ Revisa tu email para el enlace de acceso",
+        message: "✨ ¡Cuenta creada exitosamente! Bienvenido a Make-upp",
         duration: 3000,
         color: "success",
       });
 
-      // Redirigir al login con información del registro
+      // Redirigir al home después del registro exitoso
       setTimeout(() => {
-        router.push("/", "forward", "replace");
+        router.push("/home", "forward", "replace");
       }, 1000);
     } catch (error: unknown) {
       const message = getErrorMessage(error);
-      await showToast({ message, duration: 5000, color: "danger" });
+      const errObj = error as {
+        code?: string;
+        message?: string;
+        error?: { code?: string; message?: string };
+      };
+      const code = errObj.code ?? errObj.error?.code;
+
+      if (code === "user_already_exists") {
+        await showToast({
+          message: "Ya existe una cuenta con este correo electrónico",
+          duration: 4000,
+          color: "danger",
+        });
+      } else if (code === "weak_password") {
+        await showToast({
+          message: "La contraseña es muy débil. Usa al menos 6 caracteres",
+          duration: 4000,
+          color: "danger",
+        });
+      } else {
+        await showToast({ message, duration: 5000, color: "danger" });
+      }
     } finally {
       try {
         await hideLoading();
@@ -171,6 +261,42 @@ export function RegisterPage() {
                 </div>
 
                 <div className="input-wrapper">
+                  <label className="input-label">Contraseña</label>
+                  <div className="input-container">
+                    <IonIcon icon={lockClosedOutline} className="input-icon" />
+                    <IonInput
+                      value={password}
+                      name="password"
+                      onIonChange={(e) => setPassword(e.detail.value ?? "")}
+                      type="password"
+                      placeholder="Mínimo 6 caracteres"
+                      className="custom-input"
+                      required
+                      minlength={6}
+                    />
+                  </div>
+                  <p className="input-hint">Mínimo 6 caracteres</p>
+                </div>
+
+                <div className="input-wrapper">
+                  <label className="input-label">Confirmar contraseña</label>
+                  <div className="input-container">
+                    <IonIcon icon={lockClosedOutline} className="input-icon" />
+                    <IonInput
+                      value={confirmPassword}
+                      name="confirmPassword"
+                      onIonChange={(e) =>
+                        setConfirmPassword(e.detail.value ?? "")
+                      }
+                      type="password"
+                      placeholder="Repite tu contraseña"
+                      className="custom-input"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="input-wrapper">
                   <label className="input-label">Nombre completo</label>
                   <div className="input-container">
                     <IonIcon icon={personOutline} className="input-icon" />
@@ -242,7 +368,7 @@ export function RegisterPage() {
                 </IonButton>
 
                 <p className="form-note">
-                  Te enviaremos un enlace mágico para completar tu registro
+                  Tu cuenta será creada inmediatamente después del registro
                 </p>
               </form>
 
