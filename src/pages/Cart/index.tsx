@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   IonContent,
   IonPage,
@@ -32,6 +32,7 @@ import {
 import { useCart } from "../../contexts/CartContext";
 import { useUser } from "../../contexts/useUser";
 import { CheckoutService } from "../../services/checkout/CheckoutService";
+import { PayPalService } from "../../services/paypal/PayPalService";
 import { PayPalCheckout } from "../../components/PayPalCheckout";
 import { readCachedTRM, usdToCop, formatCOP } from "../../utils/trm";
 import "./Cart.css";
@@ -53,10 +54,70 @@ export function CartPage() {
   const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
 
+  const handlePayPalReturn = useCallback(
+    async (params: { payment: string; order: string }) => {
+      try {
+        if (params.payment === "success") {
+          // Simulate successful payment and create order
+          await showLoading({ message: "Procesando pago exitoso..." });
+
+          if (cart && profile) {
+            const checkoutService = new CheckoutService();
+            const { orderId } = await checkoutService.processCheckout(
+              cart,
+              profile.id
+            );
+
+            // Clear the cart after successful payment
+            await clearCart();
+
+            await showToast({
+              message: `¡Pago procesado exitosamente! Orden #${orderId.slice(
+                -8
+              )}`,
+              duration: 4000,
+              color: "success",
+            });
+
+            // Refresh cart to show empty state
+            await refreshCart();
+          }
+        } else if (params.payment === "cancelled") {
+          await showToast({
+            message: "Pago cancelado por el usuario",
+            duration: 3000,
+            color: "warning",
+          });
+        }
+
+        // Clean up URL parameters
+        PayPalService.cleanupPayPalReturn();
+      } catch (error) {
+        console.error("Error handling PayPal return:", error);
+        await showToast({
+          message: "Error al procesar el retorno de PayPal",
+          duration: 3000,
+          color: "danger",
+        });
+      } finally {
+        await hideLoading();
+      }
+    },
+    [cart, profile, clearCart, refreshCart, showLoading, hideLoading, showToast]
+  );
+
   useEffect(() => {
     const cached = readCachedTRM();
     setTrmValue(cached?.valor ?? null);
-  }, []);
+
+    // Check for PayPal return parameters
+    if (PayPalService.isPayPalReturn()) {
+      const params = PayPalService.getPayPalReturnParams();
+      if (params) {
+        handlePayPalReturn(params);
+      }
+    }
+  }, [handlePayPalReturn]);
 
   const handleRefresh = async (event: CustomEvent) => {
     try {
@@ -160,41 +221,6 @@ export function CartPage() {
       return;
     }
     setIsPayPalOpen(true);
-  };
-
-  const handlePaymentSuccess = async () => {
-    if (!cart || !profile) return;
-
-    try {
-      await showLoading({ message: "Creando pedido..." });
-
-      const checkoutService = new CheckoutService();
-      const { orderId } = await checkoutService.processCheckout(
-        cart,
-        profile.id
-      );
-
-      // Clear the cart after successful payment
-      await clearCart();
-
-      await showToast({
-        message: `¡Pedido creado exitosamente! Orden #${orderId.slice(-8)}`,
-        duration: 4000,
-        color: "success",
-      });
-
-      // Refresh cart to show empty state
-      await refreshCart();
-    } catch (error) {
-      console.error("Error processing payment:", error);
-      await showToast({
-        message: "Error al procesar el pago",
-        duration: 3000,
-        color: "danger",
-      });
-    } finally {
-      await hideLoading();
-    }
   };
 
   const calculateTotal = () => {
@@ -457,7 +483,6 @@ export function CartPage() {
           isOpen={isPayPalOpen}
           onClose={() => setIsPayPalOpen(false)}
           cart={cart}
-          onPaymentSuccess={handlePaymentSuccess}
         />
       </IonContent>
     </IonPage>

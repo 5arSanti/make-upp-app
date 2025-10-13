@@ -24,6 +24,7 @@ import {
 } from "ionicons/icons";
 
 import { CartWithItems } from "../../services";
+import { PayPalService } from "../../services/paypal/PayPalService";
 import { readCachedTRM, usdToCop, formatCOP } from "../../utils/trm";
 import "./PayPalCheckout.css";
 
@@ -31,19 +32,14 @@ interface PayPalCheckoutProps {
   isOpen: boolean;
   onClose: () => void;
   cart: CartWithItems | null;
-  onPaymentSuccess: () => void;
 }
 
-export function PayPalCheckout({
-  isOpen,
-  onClose,
-  cart,
-  onPaymentSuccess,
-}: PayPalCheckoutProps) {
+export function PayPalCheckout({ isOpen, onClose, cart }: PayPalCheckoutProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [trmValue, setTrmValue] = useState<number | null>(null);
   const [showToast] = useIonToast();
   const [showLoading, hideLoading] = useIonLoading();
+  const paypalService = new PayPalService();
 
   useEffect(() => {
     if (isOpen) {
@@ -87,30 +83,32 @@ export function PayPalCheckout({
     }
 
     setIsProcessing(true);
-    await showLoading({ message: "Procesando pago con PayPal..." });
+    await showLoading({ message: "Redirigiendo a PayPal..." });
 
     try {
-      // Simulate PayPal payment processing
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      // Create PayPal payment link with simulated PayPal interface
+      const paymentDetails = paypalService.createSimulatedPayPalLink(
+        cart,
+        totals.totalPrice,
+        "USD"
+      );
 
-      // Simulate successful payment
+      // Show success message before redirect
       await showToast({
-        message: "¡Pago procesado exitosamente!",
-        duration: 2000,
+        message: "Redirigiendo a PayPal...",
+        duration: 1500,
         color: "success",
       });
 
-      // Call success callback to create order and invoice
-      onPaymentSuccess();
-      onClose();
+      // Redirect to simulated PayPal interface
+      window.location.href = paymentDetails.paymentUrl;
     } catch (error) {
-      console.error("Error processing payment:", error);
+      console.error("Error creating PayPal payment:", error);
       await showToast({
-        message: "Error al procesar el pago",
+        message: "Error al crear el pago con PayPal",
         duration: 3000,
         color: "danger",
       });
-    } finally {
       setIsProcessing(false);
       await hideLoading();
     }
@@ -189,10 +187,10 @@ export function PayPalCheckout({
                 <div className="payment-details">
                   <h3>Información de Pago</h3>
                   <p>
-                    Este es un pago simulado. No se realizará ninguna
-                    transacción real.
+                    Serás redirigido a una interfaz simulada de PayPal donde
+                    podrás ver el monto real. No se procesará ningún pago real.
                   </p>
-                  <IonChip color="success" className="demo-chip">
+                  <IonChip color="warning" className="demo-chip">
                     <IonIcon icon={checkmarkCircleOutline} />
                     <span>Modo Demostración</span>
                   </IonChip>
@@ -213,12 +211,12 @@ export function PayPalCheckout({
               {isProcessing ? (
                 <>
                   <IonSpinner name="crescent" />
-                  <span>Procesando...</span>
+                  <span>Redirigiendo...</span>
                 </>
               ) : (
                 <>
                   <IonIcon icon={logoPaypal} slot="start" />
-                  <span>Pagar con PayPal</span>
+                  <span>Ir a PayPal</span>
                 </>
               )}
             </IonButton>
