@@ -122,15 +122,15 @@ export function RegisterPage() {
 
       await showToast({
         message:
-          "✨ ¡Cuenta creada exitosamente! Revisa tu correo para confirmar tu cuenta",
+          "✨ ¡Cuenta creada exitosamente! Te hemos enviado un correo de confirmación",
         duration: 4000,
         color: "success",
       });
 
-      // Redirigir al onboarding después del registro exitoso
+      // Redirigir al login después del registro exitoso
       setTimeout(() => {
-        router.push("/onboarding", "forward", "replace");
-      }, 1000);
+        router.push("/", "forward", "replace");
+      }, 2000);
     } catch (error: unknown) {
       const message = getErrorMessage(error);
       const errObj = error as {
