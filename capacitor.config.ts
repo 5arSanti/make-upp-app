@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'make-upp-app',
+  appId: 'co.makeupp.app',
+  appName: 'make-upp',
   webDir: 'dist'
 };
 
