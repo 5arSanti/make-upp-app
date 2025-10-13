@@ -9,7 +9,11 @@
 .decoration {
   position: absolute;
   border-radius: 50%;
-  background: linear-gradient(45deg, rgba(255, 182, 193, 0.1), rgba(221, 160, 221, 0.1));
+  background: linear-gradient(
+    45deg,
+    rgba(255, 182, 193, 0.1),
+    rgba(221, 160, 221, 0.1)
+  );
   animation: float 6s ease-in-out infinite;
 }
 
@@ -38,8 +42,13 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(180deg); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
 }
 
 /* Loading container */
@@ -62,8 +71,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Settings container */
@@ -101,7 +114,11 @@
   font-weight: 700;
   color: var(--ion-color-dark);
   margin: 0 0 8px 0;
-  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--ion-color-primary),
+    var(--ion-color-secondary)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -115,7 +132,11 @@
 }
 
 .role-chip {
-  --background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+  --background: linear-gradient(
+    135deg,
+    var(--ion-color-primary),
+    var(--ion-color-secondary)
+  );
   --color: white;
   font-weight: 600;
   font-size: 0.9rem;
@@ -174,7 +195,11 @@
 
 /* Admin card special styling */
 .admin-card {
-  background: linear-gradient(135deg, rgba(255, 182, 193, 0.1), rgba(221, 160, 221, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 182, 193, 0.1),
+    rgba(221, 160, 221, 0.1)
+  );
   border: 2px solid rgba(255, 182, 193, 0.3);
 }
 
@@ -207,6 +232,17 @@
   margin-bottom: 8px;
   border-radius: 12px;
   transition: all 0.2s ease;
+}
+
+/* Make account entry more visible */
+.settings-list .highlight-item {
+  background: rgba(227, 106, 214, 0.12);
+  border: 2px solid rgba(227, 106, 214, 0.35);
+  box-shadow: 0 6px 18px rgba(227, 106, 214, 0.2);
+}
+
+.settings-list .highlight-item ion-icon {
+  color: var(--ion-color-secondary);
 }
 
 .settings-list ion-item:hover {
@@ -258,23 +294,23 @@
   .settings-container {
     padding: 16px;
   }
-  
+
   .header-content {
     padding: 24px 20px;
   }
-  
+
   .header-title {
     font-size: 2rem;
   }
-  
+
   .settings-card ion-card-header {
     padding: 20px 20px 12px 20px;
   }
-  
+
   .settings-card ion-card-content {
     padding: 0 20px 20px 20px;
   }
-  
+
   .settings-card ion-card-title {
     font-size: 1.2rem;
   }
@@ -284,27 +320,27 @@
   .settings-container {
     padding: 12px;
   }
-  
+
   .header-content {
     padding: 20px 16px;
   }
-  
+
   .header-title {
     font-size: 1.8rem;
   }
-  
+
   .settings-card ion-card-header {
     padding: 16px 16px 8px 16px;
   }
-  
+
   .settings-card ion-card-content {
     padding: 0 16px 16px 16px;
   }
-  
+
   .settings-card ion-card-title {
     font-size: 1.1rem;
   }
-  
+
   .settings-list ion-item {
     margin-bottom: 6px;
   }

@@ -26,11 +26,9 @@ import {
   addOutline,
   listOutline,
   receiptOutline,
-  analyticsOutline,
   shieldOutline,
   storefrontOutline,
   cartOutline,
-  notificationsOutline,
   helpCircleOutline,
   informationCircleOutline,
   logOutOutline,
@@ -138,19 +136,13 @@ export function SettingsPage() {
                     </IonCardSubtitle>
                   </IonCardHeader>
                   <IonCardContent>
-                    <IonList className="settings-list">
-                      <IonItem button onClick={() => navigateTo("/account")}>
-                        <IonIcon icon={personOutline} slot="start" />
-                        <IonLabel>Mi Perfil</IonLabel>
-                        <IonNote slot="end">Editar información</IonNote>
-                      </IonItem>
-
-                      <IonItem button>
-                        <IonIcon icon={notificationsOutline} slot="start" />
-                        <IonLabel>Notificaciones</IonLabel>
-                        <IonNote slot="end">Próximamente</IonNote>
-                      </IonItem>
-                    </IonList>
+                  <IonList className="settings-list">
+                    <IonItem button className="highlight-item" onClick={() => navigateTo("/account")}>
+                      <IonIcon icon={personOutline} slot="start" />
+                      <IonLabel>Mi Perfil</IonLabel>
+                      <IonNote slot="end">Editar información</IonNote>
+                    </IonItem>
+                  </IonList>
                   </IonCardContent>
                 </IonCard>
               </IonCol>
@@ -237,16 +229,9 @@ export function SettingsPage() {
                           <IonLabel>Gestionar Productos</IonLabel>
                           <IonNote slot="end">Próximamente</IonNote>
                         </IonItem>
-
                         <IonItem button>
                           <IonIcon icon={receiptOutline} slot="start" />
                           <IonLabel>Pedidos y Facturas</IonLabel>
-                          <IonNote slot="end">Próximamente</IonNote>
-                        </IonItem>
-
-                        <IonItem button>
-                          <IonIcon icon={analyticsOutline} slot="start" />
-                          <IonLabel>Analíticas</IonLabel>
                           <IonNote slot="end">Próximamente</IonNote>
                         </IonItem>
                       </IonList>
@@ -267,16 +252,14 @@ export function SettingsPage() {
                   </IonCardHeader>
                   <IonCardContent>
                     <IonList className="settings-list">
-                      <IonItem button>
+                      <IonItem button onClick={() => alert("Centro de Ayuda: Próximamente.\nSoporte: soporte@make-upp.com") }>
                         <IonIcon icon={helpCircleOutline} slot="start" />
                         <IonLabel>Centro de Ayuda</IonLabel>
-                        <IonNote slot="end">Próximamente</IonNote>
                       </IonItem>
 
-                      <IonItem button>
+                      <IonItem button onClick={() => alert("Make‑upp v1.0.0\nAplicación de belleza luxury.") }>
                         <IonIcon icon={informationCircleOutline} slot="start" />
-                        <IonLabel>Acerca de Make-upp</IonLabel>
-                        <IonNote slot="end">Próximamente</IonNote>
+                        <IonLabel>Acerca de Make‑upp</IonLabel>
                       </IonItem>
                     </IonList>
                   </IonCardContent>

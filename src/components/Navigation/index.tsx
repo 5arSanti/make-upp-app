@@ -6,12 +6,7 @@ import {
   IonLabel,
   IonRouterOutlet,
 } from "@ionic/react";
-import {
-  homeOutline,
-  personOutline,
-  settingsOutline,
-  receiptOutline,
-} from "ionicons/icons";
+import { homeOutline, settingsOutline, receiptOutline } from "ionicons/icons";
 import { Route, Redirect } from "react-router-dom";
 import { HomePage } from "../../pages/Home";
 import { AccountPage } from "../../pages/Account";
@@ -53,22 +48,17 @@ export function GlobalNavigation() {
           <IonLabel>Inicio</IonLabel>
         </IonTabButton>
 
-        <IonTabButton tab="account" href="/account">
-          <IonIcon icon={personOutline} />
-          <IonLabel>Cuenta</IonLabel>
-        </IonTabButton>
-
-        <IonTabButton tab="settings" href="/settings">
-          <IonIcon icon={settingsOutline} />
-          <IonLabel>Configuración</IonLabel>
-        </IonTabButton>
-
         {permissions.isAdmin && (
           <IonTabButton tab="admin" href="/admin">
             <IonIcon icon={receiptOutline} />
             <IonLabel>Admin</IonLabel>
           </IonTabButton>
         )}
+
+        <IonTabButton tab="settings" href="/settings">
+          <IonIcon icon={settingsOutline} />
+          <IonLabel>Configuración</IonLabel>
+        </IonTabButton>
       </IonTabBar>
     </IonTabs>
   );
