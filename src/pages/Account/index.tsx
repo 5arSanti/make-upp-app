@@ -11,25 +11,12 @@ import {
 } from "@ionic/react";
 import {
   personOutline,
-  mailOutline,
-  logOutOutline,
-  checkmarkCircleOutline,
+  mailOutline, checkmarkCircleOutline
 } from "ionicons/icons";
 
 import { ProfileController, AuthController, UserRole } from "../../services";
-import { AuthSession, Session } from "@supabase/supabase-js";
+import { AuthSession } from "../../services/auth/types";
 import "./Account.css";
-
-// Helper function to convert AuthSession to Session
-const convertAuthSessionToSession = (
-  authSession: AuthSession | null
-): Session | null => {
-  if (!authSession) return null;
-  return {
-    ...authSession,
-    token_type: "bearer",
-  } as Session;
-};
 
 function getErrorMessage(error: unknown): string {
   if (typeof error === "string") {
@@ -49,7 +36,7 @@ export function AccountPage() {
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<AuthSession | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [userRole, setUserRole] = useState<string | undefined>(undefined);
 
@@ -63,11 +50,11 @@ export function AccountPage() {
   useEffect(() => {
     const getSession = async () => {
       const session = await authController.getCurrentSession();
-      setSession(convertAuthSessionToSession(session));
+      setSession(session);
     };
     getSession();
     authController.onAuthStateChange((_event, session) => {
-      setSession(convertAuthSessionToSession(session));
+      setSession(session);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -320,17 +307,7 @@ export function AccountPage() {
                 </IonButton>
               </form>
 
-              {/* Sign Out Button */}
-              <div className="signout-section">
-                <IonButton
-                  expand="block"
-                  className="signout-button"
-                  onClick={handleSignOut}
-                >
-                  <IonIcon icon={logOutOutline} slot="start" />
-                  <span>Cerrar sesión</span>
-                </IonButton>
-              </div>
+              {/* Sign Out Button moved to Settings page */}
 
               <div className="form-footer">
                 <p className="footer-text">
