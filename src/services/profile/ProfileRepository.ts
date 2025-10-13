@@ -41,16 +41,34 @@ export class ProfileRepository extends BaseRepositoryImpl<Profile> {
   }
 
   async upsert(data: Partial<Profile>): Promise<Profile> {
+    // Use maybeSingle to avoid PGRST116 when zero rows are returned
     const { data: result, error } = await supabase
       .from(this.tableName)
       .upsert(data)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       throw new Error(`Error upserting profile: ${error.message}`);
     }
 
-    return result;
+    if (result) return result as Profile;
+
+    // As a fallback (e.g., return=minimal due to RLS), fetch the row by id
+    if (data.id) {
+      const { data: fetched, error: fetchError } = await supabase
+        .from(this.tableName)
+        .select("*")
+        .eq("id", data.id as string)
+        .maybeSingle();
+      if (fetchError) {
+        throw new Error(
+          `Error fetching upserted profile: ${fetchError.message}`
+        );
+      }
+      if (fetched) return fetched as Profile;
+    }
+
+    throw new Error("Error upserting profile: empty result");
   }
 }

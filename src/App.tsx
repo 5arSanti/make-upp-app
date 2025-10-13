@@ -1,4 +1,4 @@
-import {} from "react-router-dom";
+import { } from "react-router-dom";
 import { IonApp, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 
@@ -11,11 +11,28 @@ import { useEffect } from "react";
 import { ensureTRMForToday } from "./utils/trm";
 import { AppRoutes } from "./routes/AppRoutes";
 import { GlobalNavigation } from "./components/Navigation";
+import { Profile } from "./services/profile/types";
 
 setupIonicReact();
 
 const AppContent: React.FC = () => {
   const { user, profile, isLoading } = useUser();
+
+  const isProfileComplete = (p: Profile | null): boolean => {
+    if (!p) return false;
+    const hasName = Boolean(
+      p.full_name && String(p.full_name).trim().length > 0
+    );
+    const hasUsername = Boolean(
+      p.username && String(p.username).trim().length > 0
+    );
+    const roleName =
+      p?.role && typeof p.role === "object" && "name" in p.role
+        ? p.role.name
+        : undefined;
+    const hasRole = Boolean(roleName || p.role_id);
+    return hasName && hasUsername && hasRole;
+  };
 
   useEffect(() => {
     ensureTRMForToday();
@@ -47,12 +64,14 @@ const AppContent: React.FC = () => {
     );
   }
 
+  const profileComplete = isProfileComplete(profile);
+  console.log("profileComplete", profileComplete);
   return (
     <IonApp>
       <IonReactRouter>
         {!user ? (
           <AppRoutes />
-        ) : profile === null ? (
+        ) : !profileComplete ? (
           <AppRoutes />
         ) : (
           <GlobalNavigation />

@@ -40,9 +40,28 @@ export function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // Basic email validations
+    const trimmed = email.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmed) {
+      await showToast({
+        message: "Ingresa tu correo electrónico",
+        duration: 3000,
+        color: "warning",
+      });
+      return;
+    }
+    if (!emailRegex.test(trimmed)) {
+      await showToast({
+        message: "Correo electrónico inválido",
+        duration: 3000,
+        color: "warning",
+      });
+      return;
+    }
     await showLoading();
     try {
-      await authController.signInWithOtp({ email });
+      await authController.signInWithOtp({ email: trimmed });
       await showToast({
         message: "✨ Revisa tu email para el enlace de acceso",
         duration: 3000,
@@ -50,7 +69,31 @@ export function LoginPage() {
       });
     } catch (error: unknown) {
       const message = getErrorMessage(error);
-      await showToast({ message, duration: 5000, color: "danger" });
+      // Handle specific Supabase error codes
+      const errObj = error as {
+        code?: string;
+        message?: string;
+        error?: { code?: string; message?: string };
+      };
+      const code = errObj.code ?? errObj.error?.code;
+      if (code === "validation_failed") {
+        await showToast({
+          message: "Debes ingresar un correo válido",
+          duration: 4000,
+          color: "danger",
+        });
+      } else if (code === "over_email_send_rate_limit") {
+        const rawMsg = errObj.message ?? errObj.error?.message ?? "";
+        const secs = rawMsg.match(/(\d+) seconds/);
+        const wait = secs?.[1] ? `${secs[1]} segundos` : "unos segundos";
+        await showToast({
+          message: `Espera ${wait} para solicitar un nuevo enlace`,
+          duration: 5000,
+          color: "warning",
+        });
+      } else {
+        await showToast({ message, duration: 5000, color: "danger" });
+      }
     } finally {
       await hideLoading();
     }

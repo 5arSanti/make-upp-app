@@ -12,7 +12,7 @@ export const AppRoutes: React.FC = () => {
   return (
     <IonRouterOutlet>
       <Route exact path="/">
-        <LoginPage />
+        {!user ? <LoginPage /> : <Redirect to="/onboarding" />}
       </Route>
 
       <Route exact path="/register">

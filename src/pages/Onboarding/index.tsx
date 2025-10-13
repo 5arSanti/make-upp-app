@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
   IonButton,
   IonContent,
@@ -11,7 +11,6 @@ import {
   IonLabel,
   useIonToast,
   useIonLoading,
-  useIonRouter,
 } from "@ionic/react";
 import { personOutline, checkmarkCircleOutline } from "ionicons/icons";
 
@@ -22,6 +21,9 @@ import {
   UserRole,
 } from "../../services";
 import "./Onboarding.css";
+
+// Cache for role IDs to avoid repeated queries
+const roleIdCache = new Map<UserRole, number>();
 
 function getErrorMessage(error: unknown): string {
   if (typeof error === "string") {
@@ -38,11 +40,19 @@ function getErrorMessage(error: unknown): string {
 }
 
 async function getRoleId(roleName: UserRole): Promise<number> {
+  // Check cache first
+  if (roleIdCache.has(roleName)) {
+    return roleIdCache.get(roleName)!;
+  }
+
   const roleController = new RoleController();
   const role = await roleController.getRoleByName(roleName);
   if (!role) {
     throw new Error(`Rol ${roleName} no encontrado`);
   }
+  
+  // Cache the result
+  roleIdCache.set(roleName, role.id);
   return role.id;
 }
 
@@ -52,23 +62,31 @@ export function OnboardingPage() {
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.CUSTOMER);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const profileController = new ProfileController();
-  const authController = new AuthController();
+  // Memoize controllers to avoid recreating them on every render
+  const controllers = useMemo(() => ({
+    profile: new ProfileController(),
+    auth: new AuthController(),
+  }), []);
 
   const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
-  const router = useIonRouter();
 
-  // Verificar que los hooks estén disponibles
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      // Asegurar que el DOM esté listo
-      const timer = setTimeout(() => {
-        // Los hooks ya deberían estar disponibles
-      }, 100);
-      return () => clearTimeout(timer);
+  // Enhanced validation
+  const validateForm = (): string | null => {
+    const trimmedUsername = username.trim();
+    const trimmedFullName = fullName.trim();
+
+    if (trimmedFullName.length < 2) {
+      return "El nombre completo debe tener al menos 2 caracteres";
     }
-  }, []);
+    if (trimmedUsername.length < 3) {
+      return "El nombre de usuario debe tener al menos 3 caracteres";
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(trimmedUsername)) {
+      return "El nombre de usuario solo puede contener letras, números y guiones bajos";
+    }
+    return null;
+  };
 
   const handleCompleteProfile = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -76,17 +94,14 @@ export function OnboardingPage() {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    // Validación básica
-    if (username.length < 3) {
-      try {
-        await showToast({
-          message: "El nombre de usuario debe tener al menos 3 caracteres",
-          duration: 3000,
-          color: "warning",
-        });
-      } catch (error) {
-        console.error("Error showing toast:", error);
-      }
+    // Validate form
+    const validationError = validateForm();
+    if (validationError) {
+      await showToast({
+        message: validationError,
+        duration: 3000,
+        color: "warning",
+      });
       setIsSubmitting(false);
       return;
     }
@@ -96,54 +111,41 @@ export function OnboardingPage() {
         message: "Completando perfil...",
         spinner: "crescent",
       });
-    } catch (error) {
-      console.error("Error showing loading:", error);
-    }
 
-    try {
-      const user = await authController.getCurrentUser();
-
+      const user = await controllers.auth.getCurrentUser();
       if (!user) {
         throw new Error("No hay usuario autenticado");
       }
 
       const updates = {
-        username,
-        full_name: fullName,
+        username: username.trim(),
+        full_name: fullName.trim(),
         role_id: await getRoleId(selectedRole),
       };
 
-      await profileController.updateProfile(user.id, updates);
+      await controllers.profile.updateProfile(user.id, updates);
 
-      try {
-        await showToast({
-          message: "✨ Perfil completado exitosamente",
-          duration: 2000,
-          color: "success",
-        });
-      } catch (error) {
-        console.error("Error showing success toast:", error);
-      }
+      await showToast({
+        message: "✨ Perfil completado exitosamente",
+        duration: 2000,
+        color: "success",
+      });
 
-      // Pequeño delay antes de redirigir
+      // Force page reload to trigger App.tsx re-evaluation
+      // This ensures the routing logic detects the completed profile
       setTimeout(() => {
-        router.push("/account", "forward", "replace");
-      }, 500);
+        window.location.href = "/home";
+      }, 1000);
+
     } catch (error: unknown) {
       const message = getErrorMessage(error);
-      try {
-        await showToast({ message, duration: 5000, color: "danger" });
-      } catch (toastError) {
-        console.error("Error showing error toast:", toastError);
-        // Fallback: mostrar en consola
-        console.error("Profile completion error:", message);
-      }
+      await showToast({ 
+        message, 
+        duration: 5000, 
+        color: "danger" 
+      });
     } finally {
-      try {
-        await hideLoading();
-      } catch (error) {
-        console.error("Error hiding loading:", error);
-      }
+      await hideLoading();
       setIsSubmitting(false);
     }
   };
