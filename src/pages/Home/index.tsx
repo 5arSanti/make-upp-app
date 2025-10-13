@@ -14,15 +14,13 @@ import {
   IonButton,
   IonIcon,
   IonSearchbar,
-  IonSegment,
-  IonSegmentButton,
-  IonLabel,
-  IonSpinner,
+  IonSelect,
+  IonSelectOption, IonSpinner,
   IonRefresher,
   IonRefresherContent,
   IonBadge,
   useIonToast,
-  useIonLoading,
+  useIonLoading
 } from "@ionic/react";
 import {
   searchOutline,
@@ -38,6 +36,7 @@ import {
 import { ProductController, CategoryController } from "../../services";
 import { Product } from "../../services/products/types";
 import { Category } from "../../services/categories/types";
+import { readCachedTRM, usdToCop, formatCOP } from "../../utils/trm";
 import "./Home.css";
 
 export function HomePage() {
@@ -49,6 +48,7 @@ export function HomePage() {
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(12);
+  const [trmValue, setTrmValue] = useState<number | null>(null);
 
   const productController = new ProductController();
   const categoryController = new CategoryController();
@@ -76,6 +76,8 @@ export function HomePage() {
 
       setProducts(productsData);
       setCategories(categoriesData);
+      const cached = readCachedTRM();
+      setTrmValue(cached?.valor ?? null);
     } catch (error) {
       console.error("Error loading data:", error);
       await showToast({
@@ -298,29 +300,22 @@ export function HomePage() {
               className="home-searchbar"
             />
 
-            <div className="category-filters">
-              <IonSegment
-                value={selectedCategory}
-                onIonChange={(e) =>
-                  setSelectedCategory(e.detail.value!.toString())
-                }
-                className="category-segment"
-              >
-                <IonSegmentButton value="all">
-                  <IonLabel>Todos ({products.length})</IonLabel>
-                </IonSegmentButton>
-                {categoryStats.map((category) => (
-                  <IonSegmentButton
-                    key={category.id}
-                    value={category.id.toString()}
-                  >
-                    <IonLabel>
-                      {category.name} ({category.productCount})
-                    </IonLabel>
-                  </IonSegmentButton>
-                ))}
-              </IonSegment>
-            </div>
+          <div className="category-filters">
+            <IonSelect
+              interface="popover"
+              value={selectedCategory}
+              onIonChange={(e) => setSelectedCategory(e.detail.value!.toString())}
+              placeholder="Selecciona una categoría"
+              className="category-select"
+            >
+              <IonSelectOption value="all">Todos ({products.length})</IonSelectOption>
+              {categoryStats.map((category) => (
+                <IonSelectOption key={category.id} value={category.id.toString()}>
+                  {category.name} ({category.productCount})
+                </IonSelectOption>
+              ))}
+            </IonSelect>
+          </div>
           </div>
 
           {/* Products Section */}
@@ -439,6 +434,12 @@ export function HomePage() {
                                 <span className="price-currency">$</span>
                                 <span className="price-amount">
                                   {product.price.toFixed(2)}
+                                </span>
+                              </div>
+                              <div className="product-price" title="Precio en COP">
+                                <span className="price-currency">COP</span>
+                                <span className="price-amount">
+                                  {formatCOP(usdToCop(product.price, trmValue ? { unidad: "COP", valor: trmValue, vigenciadesde: "", vigenciahasta: "" } : null))}
                                 </span>
                               </div>
 

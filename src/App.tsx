@@ -11,6 +11,8 @@ import { RegisterPage } from "./pages/Register";
 import { OnboardingPage } from "./pages/Onboarding";
 import { GlobalNavigation } from "./components/Navigation";
 import { UserProvider, useUser } from "./contexts/useUser";
+import { useEffect } from "react";
+import { ensureTRMForToday } from "./utils/trm";
 
 setupIonicReact();
 
@@ -18,6 +20,11 @@ setupIonicReact();
 const AppContent: React.FC = () => {
   const { user, profile, isLoading } = useUser();
   console.log(isLoading);
+
+  useEffect(() => {
+    // Ensure TRM is fetched once per day at app start
+    ensureTRMForToday();
+  }, []);
 
   if (isLoading) {
     return (
