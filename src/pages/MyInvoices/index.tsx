@@ -1,32 +1,33 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import {
-    IonButton,
-    IonContent,
-    IonIcon,
-    IonLabel,
-    IonList,
-    IonPage,
-    IonCard,
-    IonCardContent,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonChip,
-    IonNote,
-    IonSearchbar,
-    IonRefresher,
-    IonRefresherContent,
-    IonSpinner,
-    useIonToast, useIonRouter
+  IonButton,
+  IonContent,
+  IonIcon,
+  IonLabel,
+  IonList,
+  IonPage,
+  IonCard,
+  IonCardContent,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonChip,
+  IonNote,
+  IonSearchbar,
+  IonRefresher,
+  IonRefresherContent,
+  IonSpinner,
+  useIonToast,
+  useIonRouter,
 } from "@ionic/react";
 import {
-    receiptOutline,
-    checkmarkCircleOutline,
-    timeOutline,
-    alertCircleOutline,
-    eyeOutline,
-    downloadOutline,
-    documentTextOutline,
+  receiptOutline,
+  checkmarkCircleOutline,
+  timeOutline,
+  alertCircleOutline,
+  eyeOutline,
+  downloadOutline,
+  documentTextOutline,
 } from "ionicons/icons";
 
 import { InvoiceController, InvoiceWithOrder } from "../../services";
@@ -118,7 +119,7 @@ export function MyInvoicesPage() {
         invoice.id.toString().includes(searchLower) ||
         invoice.order_id.toLowerCase().includes(searchLower) ||
         invoice.order.items.some((item) =>
-          item.product.name.toLowerCase().includes(searchLower)
+          item.product?.name?.toLowerCase().includes(searchLower)
         )
       );
     });
@@ -386,10 +387,10 @@ export function MyInvoicesPage() {
                           {invoice.order.items.slice(0, 3).map((item) => (
                             <div key={item.id} className="invoice-item">
                               <div className="item-image">
-                                {item.product.image_url ? (
+                                {item.product?.image_url ? (
                                   <img
                                     src={item.product.image_url}
-                                    alt={item.product.name}
+                                    alt={item.product.name || "Producto"}
                                   />
                                 ) : (
                                   <div className="no-image">
@@ -398,7 +399,9 @@ export function MyInvoicesPage() {
                                 )}
                               </div>
                               <div className="item-info">
-                                <p className="item-name">{item.product.name}</p>
+                                <p className="item-name">
+                                  {item.product?.name || "Producto eliminado"}
+                                </p>
                                 <p className="item-quantity">
                                   Cantidad: {item.quantity}
                                 </p>
