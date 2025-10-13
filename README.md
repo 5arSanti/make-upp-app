@@ -9,3 +9,5 @@ npx cap open android
 
 # Construir APK desde línea de comandos (requiere Android SDK)
 npx cap run android
+
+cd android && ./gradlew assembleDebug
