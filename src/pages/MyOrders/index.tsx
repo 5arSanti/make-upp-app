@@ -267,7 +267,7 @@ export function MyOrdersPage() {
                 <IonCard className="stat-card">
                   <IonCardContent>
                     <div className="stat-content">
-                      <IonIcon icon={downloadOutline} className="stat-icon" />
+                      <IonIcon icon={receiptOutline} className="stat-icon" />
                       <div className="stat-info">
                         <h3>${statistics.totalSpent.toFixed(2)}</h3>
                         <p>Total Gastado</p>

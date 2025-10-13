@@ -72,7 +72,7 @@ export class ProfileService extends BaseServiceImpl<Profile> {
   async checkProfileExists(userId: string): Promise<boolean> {
     try {
       const profile = await this.getProfileByUserId(userId);
-      return profile !== null && profile.username && profile.username.trim().length >= 3;
+      return profile !== null && Boolean(profile.username && profile.username.trim().length >= 3);
     } catch (error) {
       console.error("Error checking profile existence:", error);
       return false;
