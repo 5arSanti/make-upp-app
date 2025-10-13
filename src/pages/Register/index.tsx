@@ -5,10 +5,6 @@ import {
   IonIcon,
   IonInput,
   IonPage,
-  IonRadio,
-  IonRadioGroup,
-  IonItem,
-  IonLabel,
   useIonToast,
   useIonLoading,
   useIonRouter,
@@ -16,12 +12,11 @@ import {
 import {
   sparklesOutline,
   mailOutline,
-  personOutline,
   lockClosedOutline,
   checkmarkCircleOutline,
 } from "ionicons/icons";
 
-import { AuthController, UserRole } from "../../services";
+import { AuthController } from "../../services";
 import "./Register.css";
 
 function getErrorMessage(error: unknown): string {
@@ -42,9 +37,6 @@ export function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [username, setUsername] = useState("");
-  const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.CUSTOMER);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const authController = new AuthController();
@@ -112,26 +104,6 @@ export function RegisterPage() {
       return;
     }
 
-    if (!fullName.trim()) {
-      await showToast({
-        message: "Ingresa tu nombre completo",
-        duration: 3000,
-        color: "warning",
-      });
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (username.length < 3) {
-      await showToast({
-        message: "El nombre de usuario debe tener al menos 3 caracteres",
-        duration: 3000,
-        color: "warning",
-      });
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
       await showLoading({
         message: "Creando tu cuenta...",
@@ -146,18 +118,18 @@ export function RegisterPage() {
       await authController.signUp({
         email: email.trim(),
         password: password.trim(),
-        full_name: fullName.trim(),
       });
 
       await showToast({
-        message: "✨ ¡Cuenta creada exitosamente! Bienvenido a Make-upp",
-        duration: 3000,
+        message:
+          "✨ ¡Cuenta creada exitosamente! Revisa tu correo para confirmar tu cuenta",
+        duration: 4000,
         color: "success",
       });
 
-      // Redirigir al home después del registro exitoso
+      // Redirigir al onboarding después del registro exitoso
       setTimeout(() => {
-        router.push("/home", "forward", "replace");
+        router.push("/onboarding", "forward", "replace");
       }, 1000);
     } catch (error: unknown) {
       const message = getErrorMessage(error);
@@ -193,21 +165,6 @@ export function RegisterPage() {
     }
   };
 
-  const roleOptions = [
-    {
-      value: UserRole.CUSTOMER,
-      label: "Comprador",
-      description: "Compra productos de belleza",
-      icon: "🛍️",
-    },
-    {
-      value: UserRole.SELLER,
-      label: "Vendedor",
-      description: "Vende productos en la plataforma",
-      icon: "💄",
-    },
-  ];
-
   return (
     <IonPage>
       <IonContent fullscreen className="register-page">
@@ -239,7 +196,7 @@ export function RegisterPage() {
               <div className="form-header">
                 <h2 className="form-title">Crear Cuenta</h2>
                 <p className="form-subtitle">
-                  Completa la información para registrarte
+                  Crea tu cuenta con tu correo y contraseña
                 </p>
               </div>
 
@@ -296,65 +253,6 @@ export function RegisterPage() {
                   </div>
                 </div>
 
-                <div className="input-wrapper">
-                  <label className="input-label">Nombre completo</label>
-                  <div className="input-container">
-                    <IonIcon icon={personOutline} className="input-icon" />
-                    <IonInput
-                      value={fullName}
-                      name="fullName"
-                      onIonChange={(e) => setFullName(e.detail.value ?? "")}
-                      type="text"
-                      placeholder="Ej: María García"
-                      className="custom-input"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="input-wrapper">
-                  <label className="input-label">Nombre de usuario</label>
-                  <div className="input-container">
-                    <IonIcon icon={personOutline} className="input-icon" />
-                    <IonInput
-                      value={username}
-                      name="username"
-                      onIonChange={(e) => setUsername(e.detail.value ?? "")}
-                      type="text"
-                      placeholder="Ej: mariagarcia"
-                      className="custom-input"
-                      required
-                      minlength={3}
-                    />
-                  </div>
-                  <p className="input-hint">Mínimo 3 caracteres, único</p>
-                </div>
-
-                <div className="role-selection">
-                  <label className="input-label">Tipo de cuenta</label>
-                  <IonRadioGroup
-                    value={selectedRole}
-                    onIonChange={(e) => setSelectedRole(e.detail.value)}
-                  >
-                    {roleOptions.map((role) => (
-                      <IonItem key={role.value} className="role-item">
-                        <IonRadio slot="start" value={role.value} />
-                        <IonLabel>
-                          <div className="role-content">
-                            <div className="role-header">
-                              <span className="role-icon">{role.icon}</span>
-                              <span className="role-name">{role.label}</span>
-                            </div>
-                            <p className="role-description">
-                              {role.description}
-                            </p>
-                          </div>
-                        </IonLabel>
-                      </IonItem>
-                    ))}
-                  </IonRadioGroup>
-                </div>
-
                 <IonButton
                   type="submit"
                   expand="block"
@@ -368,7 +266,7 @@ export function RegisterPage() {
                 </IonButton>
 
                 <p className="form-note">
-                  Tu cuenta será creada inmediatamente después del registro
+                  Te enviaremos un correo de confirmación para activar tu cuenta
                 </p>
               </form>
 

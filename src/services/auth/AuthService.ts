@@ -87,9 +87,11 @@ export class AuthService {
         email: data.email,
         password: data.password,
         options: {
-          data: {
-            full_name: data.full_name,
-          },
+          data: data.full_name
+            ? {
+                full_name: data.full_name,
+              }
+            : undefined,
         },
       });
 
