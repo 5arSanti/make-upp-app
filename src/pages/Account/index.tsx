@@ -165,39 +165,6 @@ export function AccountPage() {
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      await showLoading({
-        message: "Cerrando sesión...",
-        spinner: "crescent",
-      });
-    } catch (error) {
-      console.error("Error showing loading:", error);
-    }
-
-    try {
-      await authController.signOut();
-      await showToast({
-        message: "👋 Sesión cerrada exitosamente",
-        duration: 2000,
-        color: "success",
-      });
-
-      setTimeout(() => {
-        router.push("/", "forward", "replace");
-      }, 500);
-    } catch (error: unknown) {
-      const message = getErrorMessage(error);
-      await showToast({ message, duration: 5000, color: "danger" });
-    } finally {
-      try {
-        await hideLoading();
-      } catch (error) {
-        console.error("Error hiding loading:", error);
-      }
-    }
-  };
-
   return (
     <IonPage>
       <IonContent fullscreen className="account-page">
