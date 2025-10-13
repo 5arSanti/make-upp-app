@@ -11,7 +11,6 @@ export const AppRoutes: React.FC = () => {
 
   return (
     <IonRouterOutlet>
-      {/* Guest routes */}
       <Route exact path="/">
         <LoginPage />
       </Route>
@@ -20,15 +19,11 @@ export const AppRoutes: React.FC = () => {
         {!user ? <RegisterPage /> : <Redirect to="/" />}
       </Route>
 
-      {/* Onboarding route (will only be mounted by App when applicable) */}
       <Route exact path="/onboarding">
         <OnboardingPage />
       </Route>
 
-      {/* Fallback */}
       <Route render={() => <Redirect to="/" />} />
     </IonRouterOutlet>
   );
 };
-
-

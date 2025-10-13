@@ -1,5 +1,17 @@
-import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet } from "@ionic/react";
-import { homeOutline, personOutline, settingsOutline, receiptOutline } from "ionicons/icons";
+import {
+  IonTabs,
+  IonTabBar,
+  IonTabButton,
+  IonIcon,
+  IonLabel,
+  IonRouterOutlet,
+} from "@ionic/react";
+import {
+  homeOutline,
+  personOutline,
+  settingsOutline,
+  receiptOutline,
+} from "ionicons/icons";
 import { Route, Redirect } from "react-router-dom";
 import { HomePage } from "../../pages/Home";
 import { AccountPage } from "../../pages/Account";
@@ -51,7 +63,6 @@ export function GlobalNavigation() {
           <IonLabel>Configuración</IonLabel>
         </IonTabButton>
 
-        {/* Admin-only tab for orders and invoices */}
         {permissions.isAdmin && (
           <IonTabButton tab="admin" href="/admin">
             <IonIcon icon={receiptOutline} />
