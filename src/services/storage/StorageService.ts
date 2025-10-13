@@ -13,15 +13,16 @@ export class StorageService {
       // Generate unique filename if not provided
       const timestamp = Date.now();
       const randomString = Math.random().toString(36).substring(2, 15);
-      const fileExtension = file.name.split('.').pop();
-      const finalFileName = fileName || `product_${timestamp}_${randomString}.${fileExtension}`;
+      const fileExtension = file.name.split(".").pop();
+      const finalFileName =
+        fileName || `product_${timestamp}_${randomString}.${fileExtension}`;
 
       // Upload file to Supabase Storage
       const { data, error } = await supabase.storage
         .from(this.bucketName)
         .upload(finalFileName, file, {
-          cacheControl: '3600',
-          upsert: false
+          cacheControl: "3600",
+          upsert: false,
         });
 
       if (error) {
@@ -35,7 +36,7 @@ export class StorageService {
 
       return {
         path: data.path,
-        url: urlData.publicUrl
+        url: urlData.publicUrl,
       };
     } catch (error) {
       console.error("Error uploading image:", error);
