@@ -14,13 +14,10 @@ import { GlobalNavigation } from "./components/Navigation";
 
 setupIonicReact();
 
-// Componente interno que usa el contexto
 const AppContent: React.FC = () => {
   const { user, profile, isLoading } = useUser();
-  console.log(isLoading);
 
   useEffect(() => {
-    // Ensure TRM is fetched once per day at app start
     ensureTRMForToday();
   }, []);
 
