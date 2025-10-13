@@ -1,9 +1,23 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: 'co.makeupp.app',
-  appName: 'make-upp',
-  webDir: 'dist'
+  appId: "com.makeupp.app",
+  appName: "make-upp",
+  webDir: "dist",
+  android: {
+    buildOptions: {
+      keystoreAlias: "make-upp",
+      keystoreAliasPassword: "make-upp",
+      keystorePassword: "make-upp",
+    },
+  },
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 2000,
+      backgroundColor: "#ffffff",
+      showSpinner: false,
+    },
+  },
 };
 
 export default config;

@@ -1,0 +1,35 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo con gradiente -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff8e8e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f8f9fa;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Fondo circular -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGradient)" stroke="#ffffff" stroke-width="8"/>
+  
+  <!-- Icono de maquillaje (labial) -->
+  <g transform="translate(256, 256)">
+    <!-- Cuerpo del labial -->
+    <ellipse cx="0" cy="20" rx="35" ry="60" fill="url(#iconGradient)" stroke="#e9ecef" stroke-width="2"/>
+    
+    <!-- Tapa del labial -->
+    <rect x="-40" y="-40" width="80" height="80" rx="8" fill="url(#iconGradient)" stroke="#e9ecef" stroke-width="2"/>
+    
+    <!-- Detalle de la tapa -->
+    <rect x="-30" y="-30" width="60" height="60" rx="4" fill="none" stroke="#dee2e6" stroke-width="1"/>
+    
+    <!-- Texto "M" -->
+    <text x="0" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#ff6b6b">M</text>
+  </g>
+  
+  <!-- Efectos de brillo -->
+  <circle cx="180" cy="180" r="20" fill="#ffffff" opacity="0.3"/>
+  <circle cx="320" cy="200" r="15" fill="#ffffff" opacity="0.2"/>
+</svg>
