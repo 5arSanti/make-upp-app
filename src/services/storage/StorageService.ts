@@ -10,6 +10,41 @@ export class StorageService {
 
   async uploadImage(file: File, fileName?: string): Promise<UploadResult> {
     try {
+      // Check if user is authenticated
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
+
+      if (authError || !user) {
+        throw new Error("User must be authenticated to upload images");
+      }
+
+      // Validate file type
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error(
+          `File type ${
+            file.type
+          } is not allowed. Allowed types: ${allowedTypes.join(", ")}`
+        );
+      }
+
+      // Validate file size (5MB limit as per bucket configuration)
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      if (file.size > maxSize) {
+        throw new Error(
+          `File size ${(file.size / 1024 / 1024).toFixed(
+            2
+          )}MB exceeds the 5MB limit`
+        );
+      }
+
       // Generate unique filename if not provided
       const timestamp = Date.now();
       const randomString = Math.random().toString(36).substring(2, 15);
@@ -17,7 +52,15 @@ export class StorageService {
       const finalFileName =
         fileName || `product_${timestamp}_${randomString}.${fileExtension}`;
 
-      // Upload file to Supabase Storage
+      console.log("Uploading image:", {
+        fileName: finalFileName,
+        fileSize: file.size,
+        fileType: file.type,
+        userId: user.id,
+      });
+
+      // Try direct upload first (simpler approach)
+      console.log("Attempting direct upload...");
       const { data, error } = await supabase.storage
         .from(this.bucketName)
         .upload(finalFileName, file, {
@@ -35,7 +78,7 @@ export class StorageService {
         .getPublicUrl(finalFileName);
 
       return {
-        path: data.path,
+        path: data?.path,
         url: urlData.publicUrl,
       };
     } catch (error) {

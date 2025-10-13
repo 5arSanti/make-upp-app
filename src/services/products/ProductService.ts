@@ -100,11 +100,11 @@ export class ProductService {
     try {
       // Get product to delete image if exists
       const product = await this.productRepository.findById(id);
-      
+
       if (product?.image_url) {
         const storageService = new StorageService();
         // Extract path from URL for deletion
-        const imagePath = product.image_url.split('/').pop();
+        const imagePath = product.image_url.split("/").pop();
         if (imagePath) {
           await storageService.deleteImage(imagePath);
         }
