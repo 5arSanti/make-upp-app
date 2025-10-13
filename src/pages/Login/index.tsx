@@ -215,13 +215,6 @@ export function LoginPage() {
                   <span>Iniciar Sesión</span>
                   <IonIcon icon={arrowForwardOutline} slot="end" />
                 </IonButton>
-
-                <p className="form-note">
-                  ¿Olvidaste tu contraseña?{" "}
-                  <a href="#" className="form-link">
-                    Recupérala aquí
-                  </a>
-                </p>
               </form>
 
               <div className="form-footer">
