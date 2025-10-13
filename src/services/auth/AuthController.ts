@@ -50,7 +50,7 @@ export class AuthController {
     }
   }
 
-  async signUp(data: SignUpDto): Promise<AuthSession> {
+  async signUp(data: SignUpDto): Promise<AuthSession | null> {
     try {
       return await this.authService.signUp(data);
     } catch (error) {

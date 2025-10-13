@@ -115,22 +115,37 @@ export function RegisterPage() {
 
     try {
       // Registrar usuario con contraseña
-      await authController.signUp({
+      const session = await authController.signUp({
         email: email.trim(),
         password: password.trim(),
       });
 
-      await showToast({
-        message:
-          "✨ ¡Cuenta creada exitosamente! Te hemos enviado un correo de confirmación",
-        duration: 4000,
-        color: "success",
-      });
+      // Si hay sesión, el usuario fue registrado inmediatamente
+      // Si no hay sesión, se envió un correo de confirmación
+      if (session) {
+        await showToast({
+          message: "✨ ¡Cuenta creada exitosamente! Bienvenido a Make-upp",
+          duration: 3000,
+          color: "success",
+        });
 
-      // Redirigir al login después del registro exitoso
-      setTimeout(() => {
-        router.push("/", "forward", "replace");
-      }, 2000);
+        // Redirigir al onboarding si hay sesión
+        setTimeout(() => {
+          router.push("/onboarding", "forward", "replace");
+        }, 1000);
+      } else {
+        await showToast({
+          message:
+            "✨ ¡Cuenta creada exitosamente! Te hemos enviado un correo de confirmación",
+          duration: 4000,
+          color: "success",
+        });
+
+        // Redirigir al login después del registro exitoso
+        setTimeout(() => {
+          router.push("/", "forward", "replace");
+        }, 2000);
+      }
     } catch (error: unknown) {
       const message = getErrorMessage(error);
       const errObj = error as {

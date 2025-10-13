@@ -81,7 +81,7 @@ export class AuthService {
     }
   }
 
-  async signUp(data: SignUpDto): Promise<AuthSession> {
+  async signUp(data: SignUpDto): Promise<AuthSession | null> {
     try {
       const { data: authData, error } = await supabase.auth.signUp({
         email: data.email,
@@ -99,11 +99,8 @@ export class AuthService {
         throw new Error(`Error signing up: ${error.message}`);
       }
 
-      if (!authData.session) {
-        throw new Error("No session returned after sign up");
-      }
-
-      return authData.session as AuthSession;
+      // Si hay sesión, la devolvemos; si no (correo de confirmación enviado), devolvemos null
+      return authData.session as AuthSession | null;
     } catch (error) {
       console.error("Error signing up:", error);
       throw error;
