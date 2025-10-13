@@ -30,13 +30,18 @@ import {
 } from "ionicons/icons";
 
 import { useCart } from "../../contexts/CartContext";
+import { useUser } from "../../contexts/useUser";
+import { CheckoutService } from "../../services/checkout/CheckoutService";
+import { PayPalCheckout } from "../../components/PayPalCheckout";
 import { readCachedTRM, usdToCop, formatCOP } from "../../utils/trm";
 import "./Cart.css";
 
 export function CartPage() {
   const [trmValue, setTrmValue] = useState<number | null>(null);
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
+  const [isPayPalOpen, setIsPayPalOpen] = useState(false);
 
+  const { profile } = useUser();
   const {
     cart,
     isLoading,
@@ -143,6 +148,53 @@ export function CartPage() {
       }
       return newFavorites;
     });
+  };
+
+  const handleCheckout = () => {
+    if (!profile) {
+      showToast({
+        message: "Debes estar autenticado para proceder al pago",
+        duration: 3000,
+        color: "warning",
+      });
+      return;
+    }
+    setIsPayPalOpen(true);
+  };
+
+  const handlePaymentSuccess = async () => {
+    if (!cart || !profile) return;
+
+    try {
+      await showLoading({ message: "Creando pedido..." });
+
+      const checkoutService = new CheckoutService();
+      const { orderId } = await checkoutService.processCheckout(
+        cart,
+        profile.id
+      );
+
+      // Clear the cart after successful payment
+      await clearCart();
+
+      await showToast({
+        message: `¡Pedido creado exitosamente! Orden #${orderId.slice(-8)}`,
+        duration: 4000,
+        color: "success",
+      });
+
+      // Refresh cart to show empty state
+      await refreshCart();
+    } catch (error) {
+      console.error("Error processing payment:", error);
+      await showToast({
+        message: "Error al procesar el pago",
+        duration: 3000,
+        color: "danger",
+      });
+    } finally {
+      await hideLoading();
+    }
   };
 
   const calculateTotal = () => {
@@ -388,6 +440,7 @@ export function CartPage() {
                       expand="block"
                       fill="solid"
                       className="checkout-button"
+                      onClick={handleCheckout}
                     >
                       <IonIcon icon={checkmarkCircleOutline} slot="start" />
                       Proceder al Pago
@@ -398,6 +451,14 @@ export function CartPage() {
             </>
           )}
         </div>
+
+        {/* PayPal Checkout Modal */}
+        <PayPalCheckout
+          isOpen={isPayPalOpen}
+          onClose={() => setIsPayPalOpen(false)}
+          cart={cart}
+          onPaymentSuccess={handlePaymentSuccess}
+        />
       </IonContent>
     </IonPage>
   );
