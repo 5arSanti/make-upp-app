@@ -7,11 +7,11 @@ import {
   IonPage,
   useIonToast,
   useIonLoading,
-  useIonRouter,
 } from "@ionic/react";
 import {
   personOutline,
-  mailOutline, checkmarkCircleOutline
+  mailOutline,
+  checkmarkCircleOutline,
 } from "ionicons/icons";
 
 import { ProfileController, AuthController, UserRole } from "../../services";
@@ -45,7 +45,6 @@ export function AccountPage() {
 
   const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
-  const router = useIonRouter();
 
   useEffect(() => {
     const getSession = async () => {
