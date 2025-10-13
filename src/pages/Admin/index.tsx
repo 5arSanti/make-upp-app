@@ -499,9 +499,6 @@ export function AdminPage() {
                         </div>
 
                         <div className="item-actions">
-                          <IonButton size="small" fill="outline">
-                            Ver Detalles
-                          </IonButton>
                           {order.status === OrderStatus.PENDING && (
                             <IonButton
                               size="small"

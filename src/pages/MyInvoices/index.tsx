@@ -25,7 +25,6 @@ import {
   checkmarkCircleOutline,
   timeOutline,
   alertCircleOutline,
-  eyeOutline,
   downloadOutline,
   documentTextOutline,
 } from "ionicons/icons";
@@ -422,16 +421,6 @@ export function MyInvoicesPage() {
                       </div>
 
                       <div className="invoice-actions">
-                        <IonButton
-                          size="small"
-                          fill="outline"
-                          onClick={() =>
-                            navigateTo(`/invoice-details/${invoice.id}`)
-                          }
-                        >
-                          <IonIcon icon={eyeOutline} slot="start" />
-                          Ver Detalles
-                        </IonButton>
                         <IonButton
                           size="small"
                           color="primary"

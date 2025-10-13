@@ -25,7 +25,6 @@ import {
   checkmarkCircleOutline,
   timeOutline,
   alertCircleOutline,
-  eyeOutline,
   downloadOutline,
 } from "ionicons/icons";
 
@@ -424,16 +423,6 @@ export function MyOrdersPage() {
                       </div>
 
                       <div className="order-actions">
-                        <IonButton
-                          size="small"
-                          fill="outline"
-                          onClick={() =>
-                            navigateTo(`/order-details/${order.id}`)
-                          }
-                        >
-                          <IonIcon icon={eyeOutline} slot="start" />
-                          Ver Detalles
-                        </IonButton>
                         {order.status === OrderStatus.COMPLETED && (
                           <IonButton
                             size="small"
