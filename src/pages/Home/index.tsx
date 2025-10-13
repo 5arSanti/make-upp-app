@@ -408,7 +408,7 @@ export function HomePage() {
                               <img
                                 src={product.image_url}
                                 alt={product.name}
-                                className="product-image"
+                                className="product-image all-container"
                               />
                             ) : (
                               <div className="product-image-placeholder">
