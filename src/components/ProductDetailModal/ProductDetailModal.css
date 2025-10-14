@@ -157,21 +157,39 @@
   justify-content: center;
 }
 
-.quantity-input-item {
-  --background: transparent;
-  --border-width: 0;
-  --inner-border-width: 0;
-  --padding-start: 0;
-  --padding-end: 0;
-  width: 80px;
+.quantity-input-container {
+  margin: 0 8px;
+  flex: 1;
+  max-width: 80px;
 }
 
-.quantity-input {
+.quantity-input-container .input-container {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid var(--ion-color-light);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.quantity-input-container .input-container:focus-within {
+  border-color: var(--ion-color-primary);
+  box-shadow: 0 4px 8px rgba(var(--ion-color-primary-rgb), 0.2);
+}
+
+.quantity-input-container .custom-input {
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  --background: transparent;
+  --color: var(--ion-color-dark);
   text-align: center;
-  font-size: 1.1rem;
   font-weight: 600;
-  --padding-start: 0;
-  --padding-end: 0;
+  font-size: 16px;
+  min-height: 40px;
+}
+
+.quantity-input-container .input-icon {
+  display: none; /* Hide icon for quantity input */
 }
 
 /* Add to Cart Section */
@@ -223,7 +241,7 @@
     gap: 8px;
   }
 
-  .quantity-input-item {
+  .quantity-input-container {
     width: 60px;
   }
 }

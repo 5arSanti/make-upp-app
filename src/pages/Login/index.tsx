@@ -3,7 +3,6 @@ import {
   IonButton,
   IonContent,
   IonIcon,
-  IonInput,
   IonPage,
   useIonToast,
   useIonLoading,
@@ -17,6 +16,7 @@ import {
 } from "ionicons/icons";
 
 import { AuthController } from "../../services";
+import { CustomInput } from "../../components/CustomInput";
 import "./Login.css";
 
 function getErrorMessage(error: unknown): string {
@@ -173,39 +173,29 @@ export function LoginPage() {
               </div>
 
               <form onSubmit={handleLogin} className="login-form">
-                <div className="input-wrapper">
-                  <label className="input-label">Correo electrónico</label>
-                  <div className="input-container">
-                    <IonIcon icon={mailOutline} className="input-icon" />
-                    <IonInput
-                      value={email}
-                      name="email"
-                      onIonChange={(e) => setEmail(e.detail.value ?? "")}
-                      type="email"
-                      placeholder="tu@email.com"
-                      className="custom-input"
-                      enterkeyhint="next"
-                      required
-                    />
-                  </div>
-                </div>
+                <label className="input-label">Correo electrónico</label>
+                <CustomInput
+                  value={email}
+                  onChange={setEmail}
+                  type="email"
+                  placeholder="tu@email.com"
+                  icon={mailOutline}
+                  required
+                  name="email"
+                  enterkeyhint="next"
+                />
 
-                <div className="input-wrapper">
-                  <label className="input-label">Contraseña</label>
-                  <div className="input-container">
-                    <IonIcon icon={lockClosedOutline} className="input-icon" />
-                    <IonInput
-                      value={password}
-                      name="password"
-                      onIonChange={(e) => setPassword(e.detail.value ?? "")}
-                      type="password"
-                      placeholder="Tu contraseña"
-                      className="custom-input"
-                      enterkeyhint="send"
-                      required
-                    />
-                  </div>
-                </div>
+                <label className="input-label">Contraseña</label>
+                <CustomInput
+                  value={password}
+                  onChange={setPassword}
+                  type="password"
+                  placeholder="Tu contraseña"
+                  icon={lockClosedOutline}
+                  required
+                  name="password"
+                  enterkeyhint="send"
+                />
 
                 <IonButton
                   type="submit"

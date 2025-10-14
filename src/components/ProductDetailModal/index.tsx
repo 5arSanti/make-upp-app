@@ -14,8 +14,6 @@ import {
   IonCardSubtitle,
   IonChip,
   IonSpinner,
-  IonItem,
-  IonInput,
   useIonToast,
   useIonLoading,
 } from "@ionic/react";
@@ -33,6 +31,7 @@ import { Product } from "../../services/products/types";
 import { useUser } from "../../contexts/useUser";
 import { useCart } from "../../contexts/CartContext";
 import { readCachedTRM, usdToCop, formatCOP } from "../../utils/trm";
+import { CustomInput } from "../CustomInput";
 import "./ProductDetailModal.css";
 
 interface ProductDetailModalProps {
@@ -243,19 +242,21 @@ export function ProductDetailModal({
                     <IonIcon icon={removeOutline} />
                   </IonButton>
 
-                  <IonItem className="quantity-input-item">
-                    <IonInput
-                      type="number"
-                      value={quantity}
-                      onIonChange={(e) => {
-                        const value = parseInt(e.detail.value!) || 1;
-                        if (value >= 1 && value <= 99) {
-                          setQuantity(value);
+                  <div className="quantity-input-container">
+                    <CustomInput
+                      value={quantity.toString()}
+                      onChange={(value) => {
+                        const numValue = parseInt(value) || 1;
+                        if (numValue >= 1 && numValue <= 99) {
+                          setQuantity(numValue);
                         }
                       }}
+                      type="number"
                       className="quantity-input"
+                      minlength={1}
+                      maxlength={2}
                     />
-                  </IonItem>
+                  </div>
 
                   <IonButton
                     fill="outline"

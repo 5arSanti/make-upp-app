@@ -3,7 +3,6 @@ import {
   IonButton,
   IonContent,
   IonIcon,
-  IonInput,
   IonPage,
   IonRadio,
   IonRadioGroup,
@@ -20,6 +19,7 @@ import {
   RoleController,
   UserRole,
 } from "../../services";
+import { CustomInput } from "../../components/CustomInput";
 import "./Onboarding.css";
 
 // Cache for role IDs to avoid repeated queries
@@ -50,7 +50,7 @@ async function getRoleId(roleName: UserRole): Promise<number> {
   if (!role) {
     throw new Error(`Rol ${roleName} no encontrado`);
   }
-  
+
   // Cache the result
   roleIdCache.set(roleName, role.id);
   return role.id;
@@ -63,10 +63,13 @@ export function OnboardingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Memoize controllers to avoid recreating them on every render
-  const controllers = useMemo(() => ({
-    profile: new ProfileController(),
-    auth: new AuthController(),
-  }), []);
+  const controllers = useMemo(
+    () => ({
+      profile: new ProfileController(),
+      auth: new AuthController(),
+    }),
+    []
+  );
 
   const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
@@ -136,13 +139,12 @@ export function OnboardingPage() {
       setTimeout(() => {
         window.location.href = "/home";
       }, 1000);
-
     } catch (error: unknown) {
       const message = getErrorMessage(error);
-      await showToast({ 
-        message, 
-        duration: 5000, 
-        color: "danger" 
+      await showToast({
+        message,
+        duration: 5000,
+        color: "danger",
       });
     } finally {
       await hideLoading();
@@ -173,41 +175,37 @@ export function OnboardingPage() {
 
             {/* Form */}
             <form onSubmit={handleCompleteProfile} className="onboarding-form">
-              <div className="input-wrapper">
+              <div className="">
                 <label className="input-label">
                   Nombre completo <span className="required">*</span>
                 </label>
-                <div className="input-container">
-                  <IonIcon icon={personOutline} className="input-icon" />
-                  <IonInput
-                    value={fullName}
-                    name="fullName"
-                    onIonChange={(e) => setFullName(e.detail.value ?? "")}
-                    type="text"
-                    placeholder="Ej: María García"
-                    className="custom-input"
-                    required
-                  />
-                </div>
+                <CustomInput
+                  value={fullName}
+                  onChange={setFullName}
+                  type="text"
+                  placeholder="Ej: María García"
+                  icon={personOutline}
+                  required
+                  name="fullName"
+                  enterkeyhint="next"
+                />
               </div>
 
-              <div className="input-wrapper">
+              <div className="">
                 <label className="input-label">
                   Nombre de usuario <span className="required">*</span>
                 </label>
-                <div className="input-container">
-                  <IonIcon icon={personOutline} className="input-icon" />
-                  <IonInput
-                    value={username}
-                    name="username"
-                    onIonChange={(e) => setUsername(e.detail.value ?? "")}
-                    type="text"
-                    placeholder="Ej: mariagarcia"
-                    className="custom-input"
-                    required
-                    minlength={3}
-                  />
-                </div>
+                <CustomInput
+                  value={username}
+                  onChange={setUsername}
+                  type="text"
+                  placeholder="Ej: mariagarcia"
+                  icon={personOutline}
+                  required
+                  minlength={3}
+                  name="username"
+                  enterkeyhint="next"
+                />
                 <p className="input-hint">Mínimo 3 caracteres, único</p>
               </div>
 

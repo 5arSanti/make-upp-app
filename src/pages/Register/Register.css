@@ -182,39 +182,12 @@
   margin-bottom: 1.5rem;
 }
 
-.input-wrapper {
-  margin-bottom: 1.2rem;
-}
-
 .input-label {
   display: block;
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--ion-text-color);
   margin-bottom: 0.5rem;
-}
-
-.input-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.8);
-  border: 2px solid rgba(227, 106, 214, 0.2);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
-  transition: all 0.3s ease;
-}
-
-.input-container:focus-within {
-  border-color: var(--ion-color-primary);
-  box-shadow: 0 0 0 3px rgba(227, 106, 214, 0.1);
-  background: rgba(255, 255, 255, 0.95);
-}
-
-.input-icon {
-  font-size: 1.2rem;
-  color: var(--ion-color-primary);
-  margin-right: 0.75rem;
 }
 
 .custom-input {
@@ -417,10 +390,6 @@
 
   .form-title {
     font-size: 1.3rem;
-  }
-
-  .input-container {
-    padding: 0.6rem 0.8rem;
   }
 
   .submit-button {

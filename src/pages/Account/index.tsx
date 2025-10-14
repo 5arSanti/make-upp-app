@@ -3,7 +3,6 @@ import {
   IonButton,
   IonContent,
   IonIcon,
-  IonInput,
   IonPage,
   useIonToast,
   useIonLoading,
@@ -16,6 +15,7 @@ import {
 
 import { ProfileController, AuthController, UserRole } from "../../services";
 import { AuthSession } from "../../services/auth/types";
+import { CustomInput } from "../../components/CustomInput";
 import "./Account.css";
 
 function getErrorMessage(error: unknown): string {
@@ -222,41 +222,37 @@ export function AccountPage() {
               </div>
 
               <form onSubmit={handleUpdateProfile} className="profile-form">
-                <div className="input-wrapper">
+                <div className="">
                   <label className="input-label">
                     Nombre completo <span className="required">*</span>
                   </label>
-                  <div className="input-container">
-                    <IonIcon icon={personOutline} className="input-icon" />
-                    <IonInput
-                      value={fullName}
-                      name="fullName"
-                      onIonChange={(e) => setFullName(e.detail.value ?? "")}
-                      type="text"
-                      placeholder="Ej: María García"
-                      className="custom-input"
-                      required
-                    />
-                  </div>
+                  <CustomInput
+                    value={fullName}
+                    onChange={setFullName}
+                    type="text"
+                    placeholder="Ej: María García"
+                    icon={personOutline}
+                    required
+                    name="fullName"
+                    enterkeyhint="next"
+                  />
                 </div>
 
-                <div className="input-wrapper">
+                <div className="">
                   <label className="input-label">
                     Nombre de usuario <span className="required">*</span>
                   </label>
-                  <div className="input-container">
-                    <IonIcon icon={personOutline} className="input-icon" />
-                    <IonInput
-                      value={username}
-                      name="username"
-                      onIonChange={(e) => setUsername(e.detail.value ?? "")}
-                      type="text"
-                      placeholder="Ej: mariagarcia"
-                      className="custom-input"
-                      required
-                      minlength={3}
-                    />
-                  </div>
+                  <CustomInput
+                    value={username}
+                    onChange={setUsername}
+                    type="text"
+                    placeholder="Ej: mariagarcia"
+                    icon={personOutline}
+                    required
+                    minlength={3}
+                    name="username"
+                    enterkeyhint="send"
+                  />
                   <p className="input-hint">Mínimo 3 caracteres, único</p>
                 </div>
 

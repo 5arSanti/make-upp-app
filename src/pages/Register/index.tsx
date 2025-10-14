@@ -3,7 +3,6 @@ import {
   IonButton,
   IonContent,
   IonIcon,
-  IonInput,
   IonPage,
   useIonToast,
   useIonLoading,
@@ -17,6 +16,7 @@ import {
 } from "ionicons/icons";
 
 import { AuthController } from "../../services";
+import { CustomInput } from "../../components/CustomInput";
 import "./Register.css";
 
 function getErrorMessage(error: unknown): string {
@@ -216,57 +216,43 @@ export function RegisterPage() {
               </div>
 
               <form onSubmit={handleRegister} className="register-form">
-                <div className="input-wrapper">
-                  <label className="input-label">Correo electrónico</label>
-                  <div className="input-container">
-                    <IonIcon icon={mailOutline} className="input-icon" />
-                    <IonInput
-                      value={email}
-                      name="email"
-                      onIonChange={(e) => setEmail(e.detail.value ?? "")}
-                      type="email"
-                      placeholder="tu@email.com"
-                      className="custom-input"
-                      required
-                    />
-                  </div>
-                </div>
+                <label className="input-label">Correo electrónico</label>
+                <CustomInput
+                  value={email}
+                  onChange={setEmail}
+                  type="email"
+                  placeholder="tu@email.com"
+                  icon={mailOutline}
+                  required
+                  name="email"
+                  enterkeyhint="next"
+                />
 
-                <div className="input-wrapper">
-                  <label className="input-label">Contraseña</label>
-                  <div className="input-container">
-                    <IonIcon icon={lockClosedOutline} className="input-icon" />
-                    <IonInput
-                      value={password}
-                      name="password"
-                      onIonChange={(e) => setPassword(e.detail.value ?? "")}
-                      type="password"
-                      placeholder="Mínimo 6 caracteres"
-                      className="custom-input"
-                      required
-                      minlength={6}
-                    />
-                  </div>
-                  <p className="input-hint">Mínimo 6 caracteres</p>
-                </div>
+                <label className="input-label">Contraseña</label>
+                <CustomInput
+                  value={password}
+                  onChange={setPassword}
+                  type="password"
+                  placeholder="Mínimo 6 caracteres"
+                  icon={lockClosedOutline}
+                  required
+                  minlength={6}
+                  name="password"
+                  enterkeyhint="next"
+                />
+                <p className="input-hint">Mínimo 6 caracteres</p>
 
-                <div className="input-wrapper">
-                  <label className="input-label">Confirmar contraseña</label>
-                  <div className="input-container">
-                    <IonIcon icon={lockClosedOutline} className="input-icon" />
-                    <IonInput
-                      value={confirmPassword}
-                      name="confirmPassword"
-                      onIonChange={(e) =>
-                        setConfirmPassword(e.detail.value ?? "")
-                      }
-                      type="password"
-                      placeholder="Repite tu contraseña"
-                      className="custom-input"
-                      required
-                    />
-                  </div>
-                </div>
+                <label className="input-label">Confirmar contraseña</label>
+                <CustomInput
+                  value={confirmPassword}
+                  onChange={setConfirmPassword}
+                  type="password"
+                  placeholder="Repite tu contraseña"
+                  icon={lockClosedOutline}
+                  required
+                  name="confirmPassword"
+                  enterkeyhint="send"
+                />
 
                 <IonButton
                   type="submit"

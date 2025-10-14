@@ -40,6 +40,7 @@ import {
 } from "../../services";
 import { useUserPermissions } from "../../contexts/useUser";
 import "./CreateProduct.css";
+import { CustomInput } from "../../components/CustomInput";
 
 interface Category {
   id: number;
@@ -64,7 +65,7 @@ function getErrorMessage(error: unknown): string {
 export function CreateProductPage() {
   const { id } = useParams<{ id: string }>();
   const isEditMode = Boolean(id);
-  
+
   const [formData, setFormData] = useState<CreateProductDto>({
     name: "",
     description: "",
@@ -203,8 +204,10 @@ export function CreateProductPage() {
       }
 
       setIsSubmitting(true);
-      await showLoading({ 
-        message: isEditMode ? "Actualizando producto..." : "Creando producto..." 
+      await showLoading({
+        message: isEditMode
+          ? "Actualizando producto..."
+          : "Creando producto...",
       });
 
       if (isEditMode && id) {
@@ -214,7 +217,7 @@ export function CreateProductPage() {
           formData,
           selectedImage || undefined
         );
-        
+
         await hideLoading();
         await showToast({
           message: "Producto actualizado exitosamente",
@@ -222,7 +225,7 @@ export function CreateProductPage() {
           color: "success",
           icon: checkmarkCircleOutline,
         });
-        
+
         // Navigate back to product management
         router.push("/product-management");
       } else {
@@ -339,10 +342,10 @@ export function CreateProductPage() {
                         <IonLabel position="stacked">
                           Nombre del Producto *
                         </IonLabel>
-                        <IonInput
+                        <CustomInput
                           value={formData.name}
-                          onIonInput={(e) =>
-                            handleInputChange("name", e.detail.value!)
+                          onChange={(value: string) =>
+                            handleInputChange("name", value)
                           }
                           placeholder="Ej: Base de Maquillaje Luxury"
                           required
@@ -365,18 +368,12 @@ export function CreateProductPage() {
                       {/* Price */}
                       <IonItem className="form-item">
                         <IonLabel position="stacked">Precio (USD) *</IonLabel>
-                        <IonInput
-                          type="number"
-                          value={formData.price}
-                          onIonInput={(e) =>
-                            handleInputChange(
-                              "price",
-                              parseFloat(e.detail.value!) || 0
-                            )
+                        <CustomInput
+                          value={formData.price.toString()}
+                          onChange={(value: string) =>
+                            handleInputChange("price", parseFloat(value) || 0)
                           }
                           placeholder="0.00"
-                          min="0"
-                          step="0.01"
                           required
                         />
                       </IonItem>
@@ -507,10 +504,13 @@ export function CreateProductPage() {
               ) : (
                 <IonIcon icon={saveOutline} slot="start" />
               )}
-              {isSubmitting 
-                ? (isEditMode ? "Actualizando..." : "Creando...") 
-                : (isEditMode ? "Actualizar Producto" : "Crear Producto")
-              }
+              {isSubmitting
+                ? isEditMode
+                  ? "Actualizando..."
+                  : "Creando..."
+                : isEditMode
+                ? "Actualizar Producto"
+                : "Crear Producto"}
             </IonButton>
           </div>
 
