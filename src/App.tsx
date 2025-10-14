@@ -12,6 +12,7 @@ import { ensureTRMForToday } from "./utils/trm";
 import { AppRoutes } from "./routes/AppRoutes";
 import { GlobalNavigation } from "./components/Navigation";
 import { Profile } from "./services/profile/types";
+import { LoadingSpinner } from "./components/LoadingSpinner/index";
 
 setupIonicReact();
 
@@ -41,31 +42,17 @@ const AppContent: React.FC = () => {
   if (isLoading) {
     return (
       <IonApp>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            background: "linear-gradient(135deg, #fff8fc 0%, #f7e9ff 100%)",
-          }}
-        >
-          <div
-            style={{
-              textAlign: "center",
-              color: "#6b6374",
-              fontSize: "16px",
-            }}
-          >
-            Cargando...
-          </div>
-        </div>
+        <LoadingSpinner
+          message="Preparando tu experiencia de belleza..."
+          size="large"
+          color="primary"
+        />
       </IonApp>
     );
   }
 
   const profileComplete = isProfileComplete(profile);
-  console.log("profileComplete", profileComplete);
+
   return (
     <IonApp>
       <IonReactRouter>
