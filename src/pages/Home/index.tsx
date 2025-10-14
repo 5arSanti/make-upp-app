@@ -313,10 +313,6 @@ export function HomePage() {
               </h1>
               <p className="welcome-subtitle">¿Qué deseas comprar hoy?</p>
               <div className="welcome-divider"></div>
-              <p className="welcome-description">
-                Descubre productos premium cuidadosamente seleccionados para
-                realzar tu belleza natural.
-              </p>
             </div>
           </div>
 

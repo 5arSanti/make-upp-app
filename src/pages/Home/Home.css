@@ -81,8 +81,8 @@
 
 /* ===== WELCOME SECTION ===== */
 .welcome-section {
-  padding: 80px 40px 60px;
-  text-align: center;
+  padding: 0px 20px;
+  text-align: start;
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.95) 0%,
@@ -98,7 +98,7 @@
 }
 
 .welcome-title {
-  font-size: 48px;
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: -1px;
   background: linear-gradient(
@@ -109,7 +109,6 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin: 0 0 20px 0;
 }
 
 .welcome-subtitle {
@@ -128,7 +127,6 @@
     var(--ion-color-primary),
     var(--ion-color-secondary)
   );
-  margin: 0 auto 32px;
   border-radius: 2px;
 }
 
