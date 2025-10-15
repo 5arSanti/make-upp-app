@@ -1,7 +1,7 @@
 /* Create Product Page Styles */
 .create-product-page {
   --background: linear-gradient(135deg, #fff8fc 0%, #f7e9ff 100%);
-  min-height: 100vh;
+  padding-bottom: calc(20px + var(--global-tabbar-safe-padding));
 }
 
 .create-product-page .decoration {

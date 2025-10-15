@@ -55,7 +55,6 @@ export function CartPage() {
   const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
 
-
   useEffect(() => {
     const cached = readCachedTRM();
     setTrmValue(cached?.valor ?? null);
@@ -75,7 +74,7 @@ export function CartPage() {
             if (params.payment === "success") {
               console.log("Processing successful payment...");
               await showLoading({ message: "Procesando pago exitoso..." });
-              
+
               if (cart && profile) {
                 console.log("Creating order for cart:", cart.id);
                 const checkoutService = new CheckoutService();
@@ -88,7 +87,9 @@ export function CartPage() {
                 await clearCart();
 
                 await showToast({
-                  message: `¡Pago procesado exitosamente! Orden #${orderId.slice(-8)}`,
+                  message: `¡Pago procesado exitosamente! Orden #${orderId.slice(
+                    -8
+                  )}`,
                   duration: 4000,
                   color: "success",
                 });
@@ -121,7 +122,15 @@ export function CartPage() {
         processPayPalReturn();
       }
     }
-  }, [cart, profile, clearCart, refreshCart, showLoading, hideLoading, showToast]);
+  }, [
+    cart,
+    profile,
+    clearCart,
+    refreshCart,
+    showLoading,
+    hideLoading,
+    showToast,
+  ]);
 
   const handleRefresh = async (event: CustomEvent) => {
     try {
@@ -267,7 +276,11 @@ export function CartPage() {
   }
 
   return (
-    <IonPage>
+    <IonPage
+      style={{
+        paddingBottom: "calc(20px + var(--global-tabbar-safe-padding))",
+      }}
+    >
       <IonContent fullscreen className="cart-page">
         {/* Decorative elements */}
         <div className="decoration decoration-1"></div>

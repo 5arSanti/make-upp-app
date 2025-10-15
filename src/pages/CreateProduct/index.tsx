@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import {
   IonButton,
   IonContent,
-  IonIcon,
-  IonInput,
-  IonItem,
+  IonIcon, IonItem,
   IonLabel,
   IonPage,
   IonCard,
@@ -22,7 +20,7 @@ import {
   IonSpinner,
   useIonToast,
   useIonLoading,
-  useIonRouter,
+  useIonRouter
 } from "@ionic/react";
 import { useParams } from "react-router-dom";
 import {
@@ -305,12 +303,7 @@ export function CreateProductPage() {
 
   return (
     <IonPage>
-      <IonContent fullscreen className="create-product-page">
-        {/* Decorative elements */}
-        <div className="decoration decoration-1"></div>
-        <div className="decoration decoration-2"></div>
-        <div className="decoration decoration-3"></div>
-
+      <IonContent className="create-product-page">
         <div className="create-product-container">
           {/* Header */}
           <div className="create-product-header">
