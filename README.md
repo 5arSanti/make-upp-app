@@ -7,6 +7,15 @@
 1. Coloca tu icono SVG (512x512px) en `android/resources/icon.svg`
 2. Ejecuta: `npx capacitor-assets generate --iconBackgroundColor '#ffffff' --iconBackgroundColorDark '#000000' --splashBackgroundColor '#FFE3F3' --splashBackgroundColorDark '#000000'`
 
+## Instalar Capacitor Android
+
+```bash
+npm install @capacitor/android
+npx cap init
+npx cap add android
+```
+
+
 ## Construir y Sincronizar Cambios
 
 ```bash
