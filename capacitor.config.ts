@@ -1,20 +1,20 @@
-import type { CapacitorConfig } from "@capacitor/cli";
+import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: "com.makeupp.app",
-  appName: "make-upp",
+  appId: "com.mobilet3.app",
+  appName: "mobile-ionic-t3",
   webDir: "dist",
   android: {
     buildOptions: {
-      keystoreAlias: "make-upp",
-      keystoreAliasPassword: "make-upp",
-      keystorePassword: "make-upp",
+      keystoreAlias: "mobile-ionic-t3",
+      keystoreAliasPassword: "mobile-ionic-t3",
+      keystorePassword: "mobile-ionic-t3",
     },
   },
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
-      backgroundColor: "#FFE3F3",
+      backgroundColor: "#FFFFFF",
       showSpinner: false,
     },
   },
