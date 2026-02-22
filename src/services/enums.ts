@@ -5,15 +5,15 @@ export enum UserRole {
   SELLER = "seller",
 }
 
-// Enum for product categories
+// Enum for product categories (app de venta en general)
 export enum ProductCategory {
-  FACIAL_MAKEUP = "Maquillaje Facial",
-  EYE_MAKEUP = "Maquillaje de Ojos",
-  LIP_MAKEUP = "Maquillaje de Labios",
-  SKIN_CARE = "Cuidado de la Piel",
-  MAKEUP_TOOLS = "Herramientas de Maquillaje",
-  FRAGRANCES = "Fragancias",
-  ACCESSORIES = "Accesorios",
+  HOGAR = "Hogar",
+  ELECTRODOMESTICOS = "Electrodomésticos",
+  ROPA_Y_ACCESORIOS = "Ropa y Accesorios",
+  AUTOMOTRIZ = "Automotriz",
+  JUGUETES_Y_BEBES = "Juguetes y Bebés",
+  DEPORTES_Y_FITNESS = "Deportes y Fitness",
+  SALUD_Y_BELLEZA = "Salud y Belleza",
 }
 
 // Role information interface
