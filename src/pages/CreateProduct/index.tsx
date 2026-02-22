@@ -340,7 +340,7 @@ export function CreateProductPage() {
                           onChange={(value: string) =>
                             handleInputChange("name", value)
                           }
-                          placeholder="Ej: Base de Maquillaje Luxury"
+                          placeholder="Ej: Producto destacado"
                           required
                         />
                       </IonItem>

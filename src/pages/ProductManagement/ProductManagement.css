@@ -1,20 +1,40 @@
-/* Product Management Page Styles */
+/* Product Management Page - Estilo profesional */
 .product-management-page {
-  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   position: relative;
   overflow: hidden;
 }
 
-.product-management-page::before {
-  content: "";
+.product-management-page .decoration {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  opacity: 0.1;
-  z-index: -1;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.15;
+  z-index: 0;
+}
+
+.product-management-page .decoration-1 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--ion-color-primary) 0%, transparent 70%);
+  top: -100px;
+  right: -80px;
+}
+
+.product-management-page .decoration-2 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, var(--ion-color-tertiary) 0%, transparent 70%);
+  bottom: -80px;
+  left: -60px;
+}
+
+.product-management-page .decoration-3 {
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, var(--ion-color-secondary) 0%, transparent 70%);
+  top: 40%;
+  right: 10%;
 }
 
 /* Decorative elements - now using shared styles */
@@ -22,6 +42,8 @@
 
 /* Container */
 .product-management-container {
+  position: relative;
+  z-index: 1;
   padding: 15px;
   padding-bottom: calc(15px + var(--global-tabbar-safe-padding, 80px));
   max-width: 1200px;
@@ -39,11 +61,7 @@
 }
 
 .management-chip {
-  --background: linear-gradient(
-    135deg,
-    var(--ion-color-primary),
-    var(--ion-color-secondary)
-  );
+  --background: var(--ion-color-primary);
   --color: white;
   font-weight: 600;
   font-size: 0.9rem;
@@ -61,14 +79,10 @@
 }
 
 .add-product-button {
-  --background: linear-gradient(
-    135deg,
-    var(--ion-color-primary),
-    var(--ion-color-secondary)
-  );
+  --background: var(--ion-color-primary);
   --color: white;
   --border-radius: 15px;
-  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --box-shadow: 0 4px 20px rgba(30, 64, 175, 0.25);
   font-weight: 600;
   height: 50px;
   margin: 0;

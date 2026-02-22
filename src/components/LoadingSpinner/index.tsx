@@ -1,6 +1,6 @@
 import React from "react";
 import { IonSpinner, IonIcon } from "@ionic/react";
-import { sparklesOutline } from "ionicons/icons";
+import { storefrontOutline } from "ionicons/icons";
 
 import "./LoadingSpinner.css";
 
@@ -26,7 +26,7 @@ export function LoadingSpinner({
       <div className="loading-content">
         {/* Brand icon */}
         <div className="loading-brand-icon">
-          <IonIcon icon={sparklesOutline} />
+          <IonIcon icon={storefrontOutline} />
         </div>
         
         {/* Spinner */}
@@ -40,7 +40,7 @@ export function LoadingSpinner({
         
         {/* Loading message */}
         <div className="loading-message">
-          <h3 className="loading-title">Make‑upp</h3>
+          <h3 className="loading-title">Tienda</h3>
           <p className="loading-text">{message}</p>
         </div>
         

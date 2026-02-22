@@ -234,7 +234,7 @@ export class DatabaseSeeder {
         console.log("\n📋 Manual Steps Required:");
         console.log("1. Go to your Supabase Dashboard");
         console.log("2. Navigate to Authentication > Users");
-        console.log("3. Create a new user with email: admin@make-upp.com");
+        console.log("3. Create a new user with email: admin@tienda.com");
         console.log("4. Copy the user ID and run this SQL in the SQL Editor:");
         console.log("\n```sql");
         console.log(

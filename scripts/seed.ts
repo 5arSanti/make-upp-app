@@ -9,7 +9,7 @@ import { databaseSeeder } from "../src/utils/databaseSeeder";
 
 async function main() {
   try {
-    console.log("🚀 Starting Make-upp Database Seeding...\n");
+    console.log("🚀 Iniciando seed de base de datos...\n");
 
     // Check if admin user ID is provided as argument
     const adminUserId = process.argv[2];

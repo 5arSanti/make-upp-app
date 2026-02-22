@@ -168,7 +168,7 @@ export function OnboardingPage() {
               </div>
               <h1 className="onboarding-title">¡Bienvenido a Make‑upp!</h1>
               <p className="onboarding-subtitle">
-                Completa tu perfil para comenzar tu experiencia de belleza
+                Completa tu perfil para comenzar
                 luxury
               </p>
             </div>
@@ -227,7 +227,7 @@ export function OnboardingPage() {
                           <span className="role-name">Comprador</span>
                         </div>
                         <p className="role-description">
-                          Compra productos de belleza
+                          Explorar catálogo de productos
                         </p>
                       </div>
                     </IonLabel>

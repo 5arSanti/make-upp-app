@@ -152,12 +152,11 @@ export function LoginPage() {
               <div className="sparkle-icon">
                 <IonIcon icon={sparklesOutline} />
               </div>
-              <h1 className="brand-name">Make‑upp</h1>
-              <p className="brand-tagline">Luxury Beauty Experience</p>
+              <h1 className="brand-name">Tienda</h1>
+              <p className="brand-tagline">Gestión de productos</p>
               <div className="brand-divider"></div>
               <p className="brand-description">
-                Descubre una nueva forma de expresar tu belleza. Productos
-                premium seleccionados para ti.
+                Accede al catálogo y gestiona tus productos.
               </p>
             </div>
           </div>

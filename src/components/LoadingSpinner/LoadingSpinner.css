@@ -1,11 +1,11 @@
-/* Loading Spinner Component Styles */
+/* Loading Spinner - Estilo profesional */
 .loading-spinner-container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #fff8fc 0%, #f7e9ff 50%, #ffe3f3 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,14 +13,13 @@
   overflow: hidden;
 }
 
-/* Decorative background elements */
 .loading-decoration {
   position: absolute;
   border-radius: 50%;
   background: linear-gradient(
     45deg,
-    rgba(255, 107, 107, 0.1),
-    rgba(255, 142, 142, 0.1)
+    rgba(30, 64, 175, 0.08),
+    rgba(15, 23, 42, 0.06)
   );
   animation: float 6s ease-in-out infinite;
 }
@@ -52,16 +51,15 @@
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0px) rotate(0deg);
-    opacity: 0.3;
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.4;
   }
   50% {
     transform: translateY(-20px) rotate(180deg);
-    opacity: 0.6;
+    opacity: 0.7;
   }
 }
 
-/* Main loading content */
 .loading-content {
   display: flex;
   flex-direction: column;
@@ -72,7 +70,6 @@
   position: relative;
 }
 
-/* Brand icon */
 .loading-brand-icon {
   margin-bottom: 24px;
   animation: pulse 2s ease-in-out infinite;
@@ -81,7 +78,7 @@
 .loading-brand-icon ion-icon {
   font-size: 48px;
   color: var(--ion-color-primary);
-  filter: drop-shadow(0 4px 8px rgba(var(--ion-color-primary-rgb), 0.3));
+  filter: drop-shadow(0 4px 8px rgba(var(--ion-color-primary-rgb), 0.25));
 }
 
 @keyframes pulse {
@@ -91,12 +88,11 @@
     opacity: 1;
   }
   50% {
-    transform: scale(1.1);
-    opacity: 0.8;
+    transform: scale(1.05);
+    opacity: 0.9;
   }
 }
 
-/* Spinner wrapper */
 .loading-spinner-wrapper {
   margin-bottom: 32px;
   position: relative;
@@ -121,7 +117,6 @@
   height: 64px;
 }
 
-/* Loading message */
 .loading-message {
   margin-bottom: 24px;
 }
@@ -131,7 +126,6 @@
   font-weight: 700;
   color: var(--ion-color-primary);
   margin: 0 0 8px 0;
-  text-shadow: 0 2px 4px rgba(var(--ion-color-primary-rgb), 0.2);
   letter-spacing: -0.5px;
 }
 
@@ -140,10 +134,9 @@
   color: var(--ion-color-medium);
   margin: 0;
   font-weight: 400;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
-/* Animated dots */
 .loading-dots {
   display: flex;
   gap: 8px;
@@ -184,7 +177,6 @@
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .loading-brand-icon ion-icon {
     font-size: 40px;
@@ -241,39 +233,23 @@
     width: 6px;
     height: 6px;
   }
-
-  .loading-decoration-1 {
-    width: 120px;
-    height: 120px;
-  }
-
-  .loading-decoration-2 {
-    width: 100px;
-    height: 100px;
-  }
-
-  .loading-decoration-3 {
-    width: 70px;
-    height: 70px;
-  }
 }
 
-/* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .loading-spinner-container {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d1b3d 50%, #3d1a2d 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
   }
 
   .loading-decoration {
     background: linear-gradient(
       45deg,
-      rgba(255, 107, 107, 0.2),
-      rgba(255, 142, 142, 0.2)
+      rgba(30, 64, 175, 0.15),
+      rgba(15, 23, 42, 0.2)
     );
   }
 
   .loading-text {
     color: var(--ion-color-light);
-    opacity: 0.7;
+    opacity: 0.8;
   }
 }

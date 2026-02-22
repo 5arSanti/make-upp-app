@@ -43,7 +43,7 @@ const AppContent: React.FC = () => {
     return (
       <IonApp>
         <LoadingSpinner
-          message="Preparando tu experiencia de belleza..."
+          message="Cargando..."
           size="large"
           color="primary"
         />

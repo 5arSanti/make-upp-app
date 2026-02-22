@@ -1,6 +1,6 @@
-/* Create Product Page Styles */
+/* Create Product Page - Estilo profesional */
 .create-product-page {
-  --background: linear-gradient(135deg, #fff8fc 0%, #f7e9ff 100%);
+  --background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   padding-bottom: calc(20px + var(--global-tabbar-safe-padding));
 }
 
@@ -9,8 +9,8 @@
   border-radius: 50%;
   background: linear-gradient(
     45deg,
-    rgba(255, 182, 193, 0.1),
-    rgba(221, 160, 221, 0.1)
+    rgba(30, 64, 175, 0.06),
+    rgba(15, 23, 42, 0.04)
   );
   z-index: 0;
 }
@@ -300,12 +300,8 @@
 }
 
 .action-buttons .submit-button {
-  --background: linear-gradient(
-    135deg,
-    var(--ion-color-primary),
-    var(--ion-color-secondary)
-  );
-  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --background: var(--ion-color-primary);
+  --box-shadow: 0 4px 16px rgba(30, 64, 175, 0.25);
   --color: white;
 }
 

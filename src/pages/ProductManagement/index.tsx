@@ -215,8 +215,8 @@ export function ProductManagementPage() {
               <IonChip className="management-chip">
                 <IonIcon icon={storefrontOutline} />
                 <IonLabel>
-                  {permissions.userRole === "admin" && "👑 Administrador"}
-                  {permissions.userRole === "seller" && "💄 Vendedor"}
+                  {permissions.userRole === "admin" && "Administrador"}
+                  {permissions.userRole === "seller" && "Vendedor"}
                 </IonLabel>
               </IonChip>
             </div>

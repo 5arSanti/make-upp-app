@@ -124,7 +124,7 @@ export function RegisterPage() {
       // Si no hay sesión, se envió un correo de confirmación
       if (session) {
         await showToast({
-          message: "✨ ¡Cuenta creada exitosamente! Bienvenido a Make-upp",
+          message: "Cuenta creada exitosamente. Bienvenido a Tienda",
           duration: 3000,
           color: "success",
         });
@@ -199,7 +199,7 @@ export function RegisterPage() {
               <p className="brand-tagline">Únete a la Comunidad</p>
               <div className="brand-divider"></div>
               <p className="brand-description">
-                Regístrate y forma parte de nuestra comunidad de belleza luxury.
+                Regístrate y accede al catálogo de productos.
                 Elige tu rol y comienza tu experiencia.
               </p>
             </div>

@@ -2,7 +2,6 @@ import {
   IonButton,
   IonContent,
   IonIcon,
-  IonItem,
   IonLabel,
   IonList,
   IonPage,
@@ -15,23 +14,17 @@ import {
   IonRow,
   IonCol,
   IonChip,
-  IonNote,
   useIonToast,
   useIonLoading,
   useIonRouter,
+  IonItem,
 } from "@ionic/react";
 import {
   settingsOutline,
-  personOutline,
   addOutline,
   listOutline,
-  receiptOutline,
   shieldOutline,
-  cartOutline,
-  helpCircleOutline,
-  informationCircleOutline,
   logOutOutline,
-  documentTextOutline,
 } from "ionicons/icons";
 
 import { AuthController, UserRole } from "../../services";
@@ -104,17 +97,18 @@ export function SettingsPage() {
               <p className="header-subtitle">
                 Gestiona tu cuenta y preferencias
               </p>
+              <p className="header-subtitle">
+                Por: Johel Santiago Arias Becerra
+              </p>
 
               {/* Role Badge */}
               {permissions.userRole && (
                 <IonChip className="role-chip">
                   <IonIcon icon={shieldOutline} />
                   <IonLabel>
-                    {permissions.userRole === UserRole.ADMIN &&
-                      "👑 Administrador"}
-                    {permissions.userRole === UserRole.CUSTOMER &&
-                      "🛍️ Comprador"}
-                    {permissions.userRole === UserRole.SELLER && "💄 Vendedor"}
+                    {permissions.userRole === UserRole.ADMIN && "Administrador"}
+                    {permissions.userRole === UserRole.CUSTOMER && "Comprador"}
+                    {permissions.userRole === UserRole.SELLER && "Vendedor"}
                   </IonLabel>
                 </IonChip>
               )}
@@ -245,7 +239,7 @@ export function SettingsPage() {
                         button
                         onClick={() =>
                           alert(
-                            "Centro de Ayuda: Próximamente.\nSoporte: soporte@make-upp.com"
+                            "Centro de Ayuda: Próximamente.\nSoporte: soporte@tienda.com"
                           )
                         }
                       >
@@ -257,12 +251,12 @@ export function SettingsPage() {
                         button
                         onClick={() =>
                           alert(
-                            "Make‑upp v1.0.0\nAplicación de belleza luxury."
+                            "Tienda v1.0.0\nAplicación de ventas."
                           )
                         }
                       >
                         <IonIcon icon={informationCircleOutline} slot="start" />
-                        <IonLabel>Acerca de Make‑upp</IonLabel>
+                        <IonLabel>Acerca de Tienda</IonLabel>
                       </IonItem>
                     </IonList>
                   </IonCardContent>
@@ -273,14 +267,14 @@ export function SettingsPage() {
               <IonCol size="12">
                 <IonCard className="settings-card signout-card">
                   {/* <IonCardContent> */}
-                    <IonButton
-                      expand="block"
-                      className="signout-button"
-                      onClick={handleSignOut}
-                    >
-                      <IonIcon icon={logOutOutline} slot="start" />
-                      <span>Cerrar Sesión</span>
-                    </IonButton>
+                  <IonButton
+                    expand="block"
+                    className="signout-button"
+                    onClick={handleSignOut}
+                  >
+                    <IonIcon icon={logOutOutline} slot="start" />
+                    <span>Cerrar Sesión</span>
+                  </IonButton>
                   {/* </IonCardContent> */}
                 </IonCard>
               </IonCol>
