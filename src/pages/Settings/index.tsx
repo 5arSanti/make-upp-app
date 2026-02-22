@@ -124,7 +124,7 @@ export function SettingsPage() {
           <IonGrid className="settings-grid">
             <IonRow>
               {/* Account Settings */}
-              <IonCol size="12" sizeMd="6">
+              {/* <IonCol size="12" sizeMd="6">
                 <IonCard className="settings-card">
                   <IonCardHeader>
                     <IonCardTitle>
@@ -149,10 +149,10 @@ export function SettingsPage() {
                     </IonList>
                   </IonCardContent>
                 </IonCard>
-              </IonCol>
+              </IonCol> */}
 
               {/* Shopping Settings (for Customers) */}
-              {permissions.canPurchaseProducts && (
+              {/* {permissions.canPurchaseProducts && (
                 <IonCol size="12" sizeMd="6">
                   <IonCard className="settings-card">
                     <IonCardHeader>
@@ -188,7 +188,7 @@ export function SettingsPage() {
                     </IonCardContent>
                   </IonCard>
                 </IonCol>
-              )}
+              )} */}
 
               {/* Admin Settings */}
               {permissions.isAdmin && (
@@ -219,10 +219,10 @@ export function SettingsPage() {
                           <IonLabel>Gestionar Productos</IonLabel>
                         </IonItem>
 
-                        <IonItem button onClick={() => navigateTo("/admin")}>
+                        {/* <IonItem button onClick={() => navigateTo("/admin")}>
                           <IonIcon icon={receiptOutline} slot="start" />
                           <IonLabel>Pedidos y Facturas</IonLabel>
-                        </IonItem>
+                        </IonItem> */}
                       </IonList>
                     </IonCardContent>
                   </IonCard>
@@ -230,7 +230,7 @@ export function SettingsPage() {
               )}
 
               {/* Help & Support */}
-              <IonCol size="12" sizeMd="6">
+              {/* <IonCol size="12" sizeMd="6">
                 <IonCard className="settings-card">
                   <IonCardHeader>
                     <IonCardTitle>
@@ -267,7 +267,7 @@ export function SettingsPage() {
                     </IonList>
                   </IonCardContent>
                 </IonCard>
-              </IonCol>
+              </IonCol> */}
 
               {/* Sign Out */}
               <IonCol size="12">
